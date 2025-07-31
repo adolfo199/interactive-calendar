@@ -44,7 +44,11 @@ setup_gitflow() {
     if ! git show-ref --verify --quiet refs/heads/develop; then
         echo -e "${YELLOW}Creando rama develop...${NC}"
         git checkout -b develop
-        git push -u origin develop
+        
+        # Push solo si existe origin
+        if git remote get-url origin >/dev/null 2>&1; then
+            git push -u origin develop
+        fi
     fi
     
     # Volver a main
@@ -68,7 +72,11 @@ create_feature() {
     
     # Asegurar que estamos en develop
     git checkout develop
-    git pull origin develop
+    
+    # Pull solo si existe origin
+    if git remote get-url origin >/dev/null 2>&1; then
+        git pull origin develop
+    fi
     
     # Crear rama feature
     git checkout -b "feature/$feature_name"
@@ -102,14 +110,21 @@ finish_feature() {
     
     # Merge a develop
     git checkout develop
-    git pull origin develop
+    
+    # Pull solo si existe origin
+    if git remote get-url origin >/dev/null 2>&1; then
+        git pull origin develop
+    fi
+    
     git merge "feature/$feature_name" --no-ff -m "feat: merge feature $feature_name"
     
     # Eliminar rama feature
     git branch -d "feature/$feature_name"
     
-    # Push develop
-    git push origin develop
+    # Push develop solo si existe origin
+    if git remote get-url origin >/dev/null 2>&1; then
+        git push origin develop
+    fi
     
     echo -e "${GREEN}✅ Feature '$feature_name' finalizada y mergeada a develop${NC}"
 }
