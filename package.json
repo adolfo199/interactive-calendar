@@ -1,0 +1,91 @@
+{
+  "name": "@interactive/calendar",
+  "version": "1.0.0",
+  "description": "Componente de calendario para gestión de citas",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "style": "dist/styles.css",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./styles": "./dist/styles.css",
+    "./plugin": "./dist/plugin.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npm run build:js && npm run build:css",
+    "build:js": "tsc",
+    "build:css": "node scripts/build-css.js",
+    "dev": "tsc --watch",
+    "dev:watch": "npm run build && concurrently \"tsc --watch\" \"chokidar 'src/**/*.css' -c 'npm run build:css'\"",
+    "dev:pack": "npm run dev:watch && npm run pack:update",
+    "pack:update": "npm pack && cd ../calendar-test-app && npm install ../Calendar/interactive-calendar-1.0.0.tgz --force",
+    "prepublishOnly": "npm run build",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "pack:local": "npm pack",
+    "preview": "vite preview"
+  },
+  "keywords": [
+    "calendar",
+    "react",
+    "typescript",
+    "appointments"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "peerDependencies": {
+    "@types/react": ">=18.0.0",
+    "react": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@storybook/addon-essentials": "^7.6.0",
+    "@storybook/addon-interactions": "^7.6.0",
+    "@storybook/react": "^7.6.0",
+    "@storybook/react-vite": "^7.6.0",
+    "@storybook/testing-library": "^0.2.0",
+    "@testing-library/jest-dom": "^6.1.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.5.0",
+    "@types/react": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@vitejs/plugin-react": "^4.0.0",
+    "@vitest/ui": "^1.0.0",
+    "autoprefixer": "^10.4.0",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "jsdom": "^23.0.0",
+    "postcss": "^8.4.0",
+    "react": "^18.0.0",
+    "storybook": "^7.6.0",
+    "tailwindcss": "^3.3.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-tooltip": "^1.2.7",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "glob": "^11.0.3",
+    "lucide-react": "^0.534.0",
+    "tailwind-merge": "^3.3.1"
+  }
+}
