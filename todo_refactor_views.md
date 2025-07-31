@@ -3,7 +3,7 @@
 ## Estado Actual del Proyecto
 **Rama:** `views-refactor` ✅  
 **Última actualización:** 31 de julio de 2025  
-**Progreso general:** 🟢 Fase 1 Completada | ⏳ Fase 2 En Progreso
+**Progreso general:** 🟢 Fase 1 y 2 Completadas | ⏳ Fase 3 En Progreso
 
 ### ✅ Completado:
 - **Fase 1:** Estructura y componentes compartidos (100%)
@@ -18,11 +18,20 @@
   - Comentarios en inglés aplicados
   - TypeScript strict mode aplicado
 
+- **Fase 2:** Orquestador principal CalendarMain (100%)
+  - Nuevo CalendarMain como orquestador principal creado
+  - Sistema de delegación de vistas implementado
+  - Toolbar global con NavigationControls y ViewSelector
+  - Manejo centralizado de eventos y estado
+  - Compatibilidad backward mantenida
+  - Vista temporal para month hasta Fase 3
+  - Integración con componentes compartidos
+
 ### ⏳ En Progreso:
-- **Fase 2:** Orquestador principal CalendarMain (0%)
+- **Fase 3:** CalendarMonth refactorización (0%)
 
 ### 📋 Pendiente:
-- Fases 3-6: Refactorización específica de vistas
+- Fases 4-6: Refactorización de vistas restantes
 
 ## Objetivo
 
@@ -199,10 +208,10 @@ interface ViewSelectorProps {
 3. ✅ Migrar lógica común a componentes compartidos
 
 ### Fase 2: Refactorizar CalendarMain (Orquestador Principal)
-1. ⏳ Crear nuevo `CalendarMain.tsx` como orquestador principal
-2. ⏳ Migrar toolbar y controles globales
-3. ⏳ Implementar delegación a vistas específicas
-4. ⏳ Actualizar exportaciones principales
+1. ✅ Crear nuevo `CalendarMain.tsx` como orquestador principal
+2. ✅ Migrar toolbar y controles globales
+3. ✅ Implementar delegación a vistas específicas
+4. ✅ Actualizar exportaciones principales
 
 ### Fase 3: Refactorizar CalendarMonth (antes CalendarMain)
 1. ⏳ Renombrar y mover `CalendarMain.tsx` → `calendar-views/month/CalendarMonth.tsx`

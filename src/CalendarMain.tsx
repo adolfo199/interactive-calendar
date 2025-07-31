@@ -18,10 +18,10 @@ import {
   StatusIndicator 
 } from './calendar-views/shared'
 
-// Import view components (these will be created in later phases)
+// Import view components
 import { CalendarDay } from './CalendarDay'
 import { CalendarWeek } from './CalendarWeek' 
-// import { CalendarMonth } from './calendar-views/month' // Will be created in Phase 3
+import { CalendarMonth } from './calendar-views/month'
 
 // Import hooks and types
 import { useCalendar } from './hooks/useCalendar'
@@ -174,27 +174,8 @@ export function CalendarMain({
       
       case 'month':
       default:
-        // Temporarily render the old month view until Phase 3
-        return renderTemporaryMonthView()
+        return <CalendarMonth {...commonProps} selectedDate={calendar.selectedDate || undefined} />
     }
-  }
-
-  // Temporary month view (will be replaced by CalendarMonth in Phase 3)
-  const renderTemporaryMonthView = () => {
-    return (
-      <div className="p-4">
-        <div className="text-center text-gray-500 py-8">
-          <CalendarIcon className="h-12 w-12 mx-auto mb-4 text-gray-400" />
-          <h3 className="text-lg font-semibold mb-2">Month View</h3>
-          <p className="text-sm">
-            Will be replaced by CalendarMonth component in Phase 3
-          </p>
-          <p className="text-xs text-gray-400 mt-2">
-            Current date: {calendar.currentDate.toLocaleDateString()}
-          </p>
-        </div>
-      </div>
-    )
   }
 
   return (
