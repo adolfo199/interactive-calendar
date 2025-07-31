@@ -12,7 +12,67 @@ Un componente de calendario interactivo y moderno para React con TypeScript, dis
 - 🎯 **Eventos interactivos**: Manejo completo de eventos de clic y creación
 - 💼 **Gestión de citas**: Diseñado para sistemas de citas médicas/profesionales
 
-## 📦 Instalación
+## �‍💻 Desarrollo
+
+### Configuración del Entorno
+```bash
+git clone <tu-repo>
+cd Calendar
+npm install
+```
+
+### Workflow de Desarrollo (GitFlow)
+
+Usamos GitFlow para mantener un desarrollo organizado:
+
+#### 1. Iniciar una nueva feature
+```bash
+./scripts/git-workflow.sh feature mi-nueva-feature
+```
+
+#### 2. Desarrollar con commits frecuentes
+```bash
+# Hacer cambios en el código
+./scripts/git-workflow.sh commit "feat: add new calendar navigation"
+```
+
+#### 3. Finalizar feature
+```bash
+./scripts/git-workflow.sh finish-feature mi-nueva-feature
+```
+
+### Comandos Útiles
+```bash
+# Ver estado del proyecto
+./scripts/git-workflow.sh status
+
+# Compilar para desarrollo
+npm run build
+
+# Ejecutar tests
+npm test
+
+# Ver componentes en Storybook (si disponible)
+npm run storybook
+```
+
+### Estructura de Ramas
+- `master`: Código de producción
+- `develop`: Desarrollo activo
+- `feature/*`: Nuevas características
+- `release/*`: Preparación de versiones
+- `hotfix/*`: Correcciones urgentes
+
+### Convenciones de Commits
+- `feat:` Nueva funcionalidad
+- `fix:` Corrección de bug  
+- `docs:` Cambios en documentación
+- `style:` Cambios de formato
+- `refactor:` Refactorización
+- `test:` Tests
+- `chore:` Mantenimiento
+
+## �📦 Instalación
 
 ### 🚀 Opción SÚPER SIMPLE (Recomendada)
 
