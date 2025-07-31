@@ -16,15 +16,18 @@ import {
   CheckCircle2,
   Pause
 } from 'lucide-react'
-import type { CitaCalendarEvent } from './types/cita.types'
+import type { CalendarEvent } from './types/appointment.types'
+import { useCalendarTranslations } from './hooks/useCalendarTranslations'
 
 interface CalendarWeekProps {
-  events: CitaCalendarEvent[]
+  events: CalendarEvent[]
   currentDate: Date
   selectedDate: Date | null
   onDateClick?: (date: Date) => void
-  onEventClick?: (event: CitaCalendarEvent) => void
+  onEventClick?: (event: CalendarEvent) => void
   loading?: boolean
+  locale?: string
+  getWeekDays?: () => string[]
 }
 
 // Generar intervalos de tiempo de 30 minutos
@@ -37,8 +40,8 @@ function generateTimeSlots(): string[] {
   return slots
 }
 
-// Obtener los días de la semana actual
-function getWeekDays(currentDate: Date): Date[] {
+// Get the days of the current week
+function getWeekDates(currentDate: Date): Date[] {
   const days: Date[] = []
   const startOfWeek = new Date(currentDate)
   const dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
@@ -53,8 +56,8 @@ function getWeekDays(currentDate: Date): Date[] {
   return days
 }
 
-// Verificar si un evento está en un slot de tiempo específico
-function isEventInTimeSlot(event: CitaCalendarEvent, timeSlot: string, date: Date): boolean {
+// Check if an event is in a specific time slot
+function isEventInTimeSlot(event: CalendarEvent, timeSlot: string, date: Date): boolean {
   const eventDate = new Date(event.start)
   if (eventDate.toDateString() !== date.toDateString()) return false
   
@@ -67,16 +70,16 @@ function isEventInTimeSlot(event: CitaCalendarEvent, timeSlot: string, date: Dat
   return eventStartTime <= slotTime && eventEndTime > slotTime
 }
 
-// Calcular la duración del evento en slots
-function getEventDuration(event: CitaCalendarEvent): number {
+// Calculate event duration in slots
+function getEventDuration(event: CalendarEvent): number {
   const start = new Date(event.start)
   const end = new Date(event.end)
   const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60)
-  return Math.ceil(durationMinutes / 30) // Redondear hacia arriba a slots de 30 min
+  return Math.ceil(durationMinutes / 30) // Round up to 30-min slots
 }
 
-// Verificar si es el primer slot del evento
-function isEventStart(event: CitaCalendarEvent, timeSlot: string, date: Date): boolean {
+// Check if it's the first slot of the event
+function isEventStart(event: CalendarEvent, timeSlot: string, date: Date): boolean {
   const eventDate = new Date(event.start)
   if (eventDate.toDateString() !== date.toDateString()) return false
   
@@ -84,7 +87,7 @@ function isEventStart(event: CitaCalendarEvent, timeSlot: string, date: Date): b
   const eventHour = eventDate.getHours()
   const eventMinute = eventDate.getMinutes()
   
-  // Ajustar a la grilla de 30 minutos más cercana
+  // Adjust to nearest 30-minute grid
   const adjustedEventMinute = eventMinute < 30 ? 0 : 30
   
   return eventHour === slotHour && adjustedEventMinute === slotMinute
@@ -96,21 +99,52 @@ export function CalendarWeek({
   selectedDate,
   onDateClick,
   onEventClick,
-  loading = false
+  loading = false,
+  locale = 'es',
+  getWeekDays
 }: CalendarWeekProps) {
   
+  const { t } = useCalendarTranslations({ locale: locale as 'en' | 'es' })
   const timeSlots = generateTimeSlots()
-  const weekDays = getWeekDays(currentDate)
+  const weekDays = getWeekDates(currentDate)
+  const weekDayNames = getWeekDays?.() || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
   const today = new Date()
 
+  // Convert locale to browser locale format
+  const browserLocale = locale === 'en' ? 'en-US' : 'es-ES'
+
   // Función para obtener el icono del tipo de cita
-  const getEventIcon = (tipo: string) => {
-    switch (tipo.toLowerCase()) {
-      case 'consulta':
+  // Helper functions to map from Spanish to English (for backward compatibility)
+  const mapStatusToEnglish = (status: string): string => {
+    switch (status.toLowerCase()) {
+      case 'confirmada': return 'confirmed'
+      case 'pendiente': return 'pending'
+      case 'cancelada': return 'cancelled'
+      case 'completada': return 'completed'
+      case 'en_progreso': 
+      case 'en proceso': return 'in_progress'
+      default: return status.toLowerCase()
+    }
+  }
+
+  const mapTypeToEnglish = (type: string): string => {
+    switch (type.toLowerCase()) {
+      case 'consulta': return 'consultation'
+      case 'reunion': return 'meeting'
+      case 'entrenamiento': return 'training'
+      default: return type.toLowerCase()
+    }
+  }
+
+  // Function to get event icon based on appointment type
+  const getEventIcon = (type: string) => {
+    const englishType = mapTypeToEnglish(type)
+    switch (englishType) {
+      case 'consultation':
         return <CalendarIcon className="h-3 w-3" />
-      case 'reunion':
+      case 'meeting':
         return <Users className="h-3 w-3" />
-      case 'entrenamiento':
+      case 'training':
         return <GraduationCap className="h-3 w-3" />
       case 'demo':
         return <PresentationIcon className="h-3 w-3" />
@@ -119,64 +153,65 @@ export function CalendarWeek({
     }
   }
 
-  // Función para obtener el icono del estado
-  const getStatusIcon = (estado: string) => {
-    switch (estado.toLowerCase()) {
-      case 'confirmada':
+  // Function to get status icon
+  const getStatusIcon = (status: string) => {
+    const englishStatus = mapStatusToEnglish(status)
+    switch (englishStatus) {
+      case 'confirmed':
         return <CheckCircle2 className="h-2 w-2 text-green-600" />
-      case 'pendiente':
+      case 'pending':
         return <Clock className="h-2 w-2 text-yellow-600" />
-      case 'cancelada':
+      case 'cancelled':
         return <AlertCircle className="h-2 w-2 text-red-600" />
-      case 'en proceso':
+      case 'in_progress':
         return <Pause className="h-2 w-2 text-blue-600" />
       default:
         return <Clock className="h-2 w-2 text-gray-600" />
     }
   }
 
-  // Función para obtener colores basados en el ESTADO de la cita (consistente con CalendarMain)
-  const getEventColors = (estado: string) => {
-    switch (estado.toLowerCase()) {
-      case 'confirmada':
+  // Function to get colors based on appointment STATUS (consistent with CalendarMain)
+  const getEventColors = (status: string) => {
+    const englishStatus = mapStatusToEnglish(status)
+    switch (englishStatus) {
+      case 'confirmed':
         return {
-          bg: 'linear-gradient(135deg, #10b981, #059669)', // Verde
+          bg: 'linear-gradient(135deg, #10b981, #059669)', // Green
           text: '#ffffff',
           border: '#059669',
           solid: '#10b981'
         }
-      case 'pendiente':
+      case 'pending':
         return {
-          bg: 'linear-gradient(135deg, #f59e0b, #d97706)', // Amarillo/Naranja
+          bg: 'linear-gradient(135deg, #f59e0b, #d97706)', // Yellow/Orange
           text: '#ffffff',
           border: '#d97706',
           solid: '#f59e0b'
         }
-      case 'cancelada':
+      case 'cancelled':
         return {
-          bg: 'linear-gradient(135deg, #ef4444, #dc2626)', // Rojo
+          bg: 'linear-gradient(135deg, #ef4444, #dc2626)', // Red
           text: '#ffffff',
           border: '#dc2626',
           solid: '#ef4444'
         }
-      case 'completada':
+      case 'completed':
         return {
-          bg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', // Azul
+          bg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', // Blue
           text: '#ffffff',
           border: '#1d4ed8',
           solid: '#3b82f6'
         }
-      case 'en_progreso':
-      case 'en proceso':
+      case 'in_progress':
         return {
-          bg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', // Púrpura
+          bg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', // Purple
           text: '#ffffff',
           border: '#7c3aed',
           solid: '#8b5cf6'
         }
       default:
         return {
-          bg: 'linear-gradient(135deg, #6b7280, #4b5563)', // Gris
+          bg: 'linear-gradient(135deg, #6b7280, #4b5563)', // Gray
           text: '#ffffff',
           border: '#4b5563',
           solid: '#6b7280'
@@ -192,8 +227,8 @@ export function CalendarWeek({
             <div className="animate-spin h-10 w-10 border-3 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
             <div className="absolute inset-0 h-10 w-10 border-3 border-blue-200 rounded-full mx-auto animate-pulse"></div>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">Cargando vista semanal...</h3>
-          <p className="text-sm text-muted-foreground">Preparando horarios y eventos</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('loading.weeklyView')}</h3>
+          <p className="text-sm text-muted-foreground">{t('loading.schedules')}</p>
         </div>
       </div>
     )
@@ -234,7 +269,7 @@ export function CalendarWeek({
             >
               <div className="h-20 flex flex-col items-center justify-center p-3">
                 <div className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">
-                  {day.toLocaleDateString('es-ES', { weekday: 'short' })}
+                  {weekDayNames[index]}
                 </div>
                 <div className={cn(
                   "text-xl font-bold transition-all duration-200",
@@ -307,9 +342,9 @@ export function CalendarWeek({
                     if (!isEventStart(event, timeSlot, day)) return null
                     
                     const duration = getEventDuration(event)
-                    const colors = getEventColors(event.extendedProps.cita.estado)
-                    const tipoIcon = getEventIcon(event.extendedProps.tipo)
-                    const statusIcon = getStatusIcon(event.extendedProps.cita.estado)
+                    const colors = getEventColors(event.extendedProps.status)
+                    const tipoIcon = getEventIcon(event.extendedProps.type)
+                    const statusIcon = getStatusIcon(event.extendedProps.status)
                     
                     return (
                       <div key={event.id} className="group relative">
@@ -336,7 +371,7 @@ export function CalendarWeek({
                             <div className="flex items-center space-x-1">
                               {tipoIcon}
                               <span className="font-bold text-xs">
-                                {new Date(event.start).toLocaleTimeString('es-ES', { 
+                                {new Date(event.start).toLocaleTimeString(browserLocale, { 
                                   hour: '2-digit', 
                                   minute: '2-digit' 
                                 })}
@@ -354,7 +389,7 @@ export function CalendarWeek({
                           <div className="flex items-center space-x-1 opacity-90">
                             <MapPin className="h-2.5 w-2.5" />
                             <span className="truncate text-xs">
-                              {event.extendedProps.local}
+                              {event.extendedProps.location}
                             </span>
                           </div>
                           
@@ -373,21 +408,21 @@ export function CalendarWeek({
                             <div className="flex items-center space-x-2">
                               <Clock className="h-3 w-3" />
                               <span>
-                                {new Date(event.start).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })} - 
-                                {new Date(event.end).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                                {new Date(event.start).toLocaleTimeString(browserLocale, { hour: '2-digit', minute: '2-digit' })} - 
+                                {new Date(event.end).toLocaleTimeString(browserLocale, { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             </div>
                             <div className="flex items-center space-x-2">
                               <MapPin className="h-3 w-3" />
-                              <span>{event.extendedProps.local}</span>
+                              <span>{event.extendedProps.location}</span>
                             </div>
                             <div className="flex items-center space-x-2">
-                              {getStatusIcon(event.extendedProps.cita.estado)}
-                              <span className="capitalize">{event.extendedProps.cita.estado}</span>
+                              {getStatusIcon(event.extendedProps.status)}
+                              <span className="capitalize">{event.extendedProps.status}</span>
                             </div>
                             <div className="flex items-center space-x-2">
-                              {getEventIcon(event.extendedProps.tipo)}
-                              <span className="capitalize">{event.extendedProps.tipo}</span>
+                              {getEventIcon(event.extendedProps.type)}
+                              <span className="capitalize">{event.extendedProps.type}</span>
                             </div>
                           </div>
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>

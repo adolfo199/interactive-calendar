@@ -1,233 +1,233 @@
-/**
- * Hook para gestión de eventos del calendario
- * 
- * Maneja el estado de las citas/eventos y operaciones CRUD
- */
 
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import type { Cita, CitaCalendarEvent, CitaFilters } from '../types/cita.types'
+import type { 
+  Appointment, 
+  CalendarEvent, 
+  AppointmentFilters,
+  AppointmentStatus
+} from '../types/appointment.types'
 
 interface UseCalendarEventsProps {
-  initialEvents?: CitaCalendarEvent[]
+  initialEvents?: CalendarEvent[]
 }
 
 export function useCalendarEvents({ initialEvents = [] }: UseCalendarEventsProps = {}) {
-  const [events, setEvents] = useState<CitaCalendarEvent[]>(initialEvents)
+  const [events, setEvents] = useState<CalendarEvent[]>(initialEvents)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [filters, setFilters] = useState<CitaFilters>({})
+  const [filters, setFilters] = useState<AppointmentFilters>({})
 
-  // Convertir cita a evento de calendario
-  const citaToEvent = useCallback((cita: Cita): CitaCalendarEvent => {
-    const fechaBase = new Date(cita.fecha)
-    const [horaInicioHoras, horaInicioMinutos] = cita.hora_inicio.split(':').map(Number)
-    const [horaFinHoras, horaFinMinutos] = cita.hora_fin.split(':').map(Number)
+  // Convert legacy Appointment to new CalendarEvent format
+  const appointmentToEvent = useCallback((appointment: Appointment): CalendarEvent => {
+    const dateBase = new Date(appointment.date)
+    const [startHours, startMinutes] = appointment.start_time.split(':').map(Number)
+    const [endHours, endMinutes] = appointment.end_time.split(':').map(Number)
     
-    const start = new Date(fechaBase)
-    start.setHours(horaInicioHoras, horaInicioMinutos, 0, 0)
+    const start = new Date(dateBase)
+    start.setHours(startHours, startMinutes, 0, 0)
     
-    const end = new Date(fechaBase)
-    end.setHours(horaFinHoras, horaFinMinutos, 0, 0)
+    const end = new Date(dateBase)
+    end.setHours(endHours, endMinutes, 0, 0)
     
-    // Colores según estado
-    const getEstadoColor = (estado: string) => {
-      switch (estado) {
-        case 'pendiente': return '#fbbf24'
-        case 'confirmada': return '#22c55e'
-        case 'en_progreso': return '#3b82f6'
-        case 'completada': return '#10b981'
-        case 'cancelada': return '#ef4444'
+    // Colors by status
+    const getStatusColor = (status: AppointmentStatus) => {
+      switch (status) {
+        case 'pending': return '#fbbf24'
+        case 'confirmed': return '#22c55e'
+        case 'in_progress': return '#3b82f6'
+        case 'completed': return '#10b981'
+        case 'cancelled': return '#ef4444'
         default: return '#6b7280'
       }
     }
     
-    const color = getEstadoColor(cita.estado)
+    const color = getStatusColor(appointment.status)
     
     return {
-      id: cita.id,
-      title: cita.titulo,
+      id: appointment.id,
+      title: appointment.title,
       start,
       end,
       allDay: false,
       color,
       backgroundColor: color,
       borderColor: color,
-      textColor: cita.estado === 'pendiente' ? '#1f2937' : '#ffffff',
+      textColor: appointment.status === 'pending' ? '#1f2937' : '#ffffff',
       extendedProps: {
-        cita,
-        estado: cita.estado,
-        tipo: cita.tipo,
-        local: cita.local?.nombre || 'Local no especificado',
-        participantes: cita.participantes,
+        appointment,
+        status: appointment.status,
+        type: appointment.type,
+        location: appointment.location?.name || 'Location not specified',
+        participants: appointment.participants,
       }
     }
   }, [])
 
-  // Agregar evento
-  const addEvent = useCallback((cita: Cita) => {
-    const event = citaToEvent(cita)
+  // Add event
+  const addEvent = useCallback((appointment: Appointment) => {
+    const event = appointmentToEvent(appointment)
     setEvents(prev => [...prev, event])
-  }, [citaToEvent])
+  }, [appointmentToEvent])
 
-  // Actualizar evento
-  const updateEvent = useCallback((citaActualizada: Cita) => {
-    const eventActualizado = citaToEvent(citaActualizada)
+  // Update event
+  const updateEvent = useCallback((updatedAppointment: Appointment) => {
+    const updatedEvent = appointmentToEvent(updatedAppointment)
     setEvents(prev => 
       prev.map(event => 
-        event.id === citaActualizada.id ? eventActualizado : event
+        event.id === updatedAppointment.id ? updatedEvent : event
       )
     )
-  }, [citaToEvent])
+  }, [appointmentToEvent])
 
-  // Eliminar evento
-  const removeEvent = useCallback((citaId: number) => {
-    setEvents(prev => prev.filter(event => event.id !== citaId))
+  // Remove event
+  const removeEvent = useCallback((appointmentId: number) => {
+    setEvents(prev => prev.filter(event => event.id !== appointmentId))
   }, [])
 
-  // Cargar eventos (simulado - en la práctica sería una llamada a API)
-  const loadEvents = useCallback(async (newFilters: CitaFilters = {}) => {
+  // Load events (simulated - in practice would be an API call)
+  const loadEvents = useCallback(async (newFilters: AppointmentFilters = {}) => {
     setLoading(true)
     setError(null)
     setFilters(newFilters)
     
     try {
-      // Simular carga de datos desde mock
+      // Simulate data loading from mock
       const { simulateDataLoad } = await import('../mockData')
       const mockEvents = await simulateDataLoad()
       setEvents(mockEvents)
       
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al cargar eventos')
+      setError(err instanceof Error ? err.message : 'Error loading events')
     } finally {
       setLoading(false)
     }
   }, [])
 
-  // Obtener eventos para un día específico
-  const getEventsForDay = useCallback((date: Date): CitaCalendarEvent[] => {
+  // Get events for a specific day
+  const getEventsForDay = useCallback((date: Date): CalendarEvent[] => {
     return events.filter(event => {
       const eventDate = new Date(event.start)
       return eventDate.toDateString() === date.toDateString()
     })
   }, [events])
 
-  // Obtener eventos en un rango de fechas
-  const getEventsInRange = useCallback((startDate: Date, endDate: Date): CitaCalendarEvent[] => {
+  // Get events in a date range
+  const getEventsInRange = useCallback((startDate: Date, endDate: Date): CalendarEvent[] => {
     return events.filter(event => {
       const eventDate = new Date(event.start)
       return eventDate >= startDate && eventDate <= endDate
     })
   }, [events])
 
-  // Buscar eventos
-  const searchEvents = useCallback((searchTerm: string): CitaCalendarEvent[] => {
+  // Search events
+  const searchEvents = useCallback((searchTerm: string): CalendarEvent[] => {
     if (!searchTerm.trim()) return events
     
     const term = searchTerm.toLowerCase()
     return events.filter(event => 
       event.title.toLowerCase().includes(term) ||
-      event.extendedProps.local.toLowerCase().includes(term) ||
-      event.extendedProps.cita.cliente_nombre.toLowerCase().includes(term)
+      event.extendedProps.location.toLowerCase().includes(term) ||
+      event.extendedProps.appointment.client_name.toLowerCase().includes(term)
     )
   }, [events])
 
-  // Eventos filtrados
+  // Filtered events
   const filteredEvents = useMemo(() => {
     let filtered = [...events]
     
-    // Filtrar por fechas
-    if (filters.fecha_desde) {
-      const fechaDesde = new Date(filters.fecha_desde)
-      filtered = filtered.filter(event => new Date(event.start) >= fechaDesde)
+    // Filter by dates
+    if (filters.date_from) {
+      const dateFrom = new Date(filters.date_from)
+      filtered = filtered.filter(event => new Date(event.start) >= dateFrom)
     }
     
-    if (filters.fecha_hasta) {
-      const fechaHasta = new Date(filters.fecha_hasta)
-      filtered = filtered.filter(event => new Date(event.start) <= fechaHasta)
+    if (filters.date_to) {
+      const dateTo = new Date(filters.date_to)
+      filtered = filtered.filter(event => new Date(event.start) <= dateTo)
     }
     
-    // Filtrar por sucursal
-    if (filters.sucursal_id) {
+    // Filter by branch
+    if (filters.branch_id) {
       filtered = filtered.filter(event => 
-        event.extendedProps.cita.sucursal_id === filters.sucursal_id
+        event.extendedProps.appointment.branch_id === filters.branch_id
       )
     }
     
-    // Filtrar por local
-    if (filters.local_id) {
+    // Filter by location
+    if (filters.location_id) {
       filtered = filtered.filter(event => 
-        event.extendedProps.cita.local_id === filters.local_id
+        event.extendedProps.appointment.location_id === filters.location_id
       )
     }
     
-    // Filtrar por estados
-    if (filters.estado && filters.estado.length > 0) {
+    // Filter by status
+    if (filters.status && filters.status.length > 0) {
       filtered = filtered.filter(event => 
-        filters.estado?.includes(event.extendedProps.estado)
+        filters.status?.includes(event.extendedProps.status)
       )
     }
     
-    // Filtrar por tipos
-    if (filters.tipo && filters.tipo.length > 0) {
+    // Filter by types
+    if (filters.type && filters.type.length > 0) {
       filtered = filtered.filter(event => 
-        filters.tipo?.includes(event.extendedProps.tipo)
+        filters.type?.includes(event.extendedProps.type)
       )
     }
     
-    // Filtrar por cliente
-    if (filters.cliente) {
-      const clienteTerm = filters.cliente.toLowerCase()
+    // Filter by client
+    if (filters.client) {
+      const clientTerm = filters.client.toLowerCase()
       filtered = filtered.filter(event => 
-        event.extendedProps.cita.cliente_nombre.toLowerCase().includes(clienteTerm)
+        event.extendedProps.appointment.client_name.toLowerCase().includes(clientTerm)
       )
     }
     
     return filtered
   }, [events, filters])
 
-  // Cargar datos automáticamente al inicializar
+  // Load events automatically on initialization
   useEffect(() => {
     loadEvents()
   }, [loadEvents])
 
-  // Estadísticas de eventos
+  // Event statistics
   const eventStats = useMemo(() => {
     const total = filteredEvents.length
-    const porEstado = filteredEvents.reduce((acc, event) => {
-      const estado = event.extendedProps.estado
-      acc[estado] = (acc[estado] || 0) + 1
+    const byStatus = filteredEvents.reduce((acc, event) => {
+      const status = event.extendedProps.status
+      acc[status] = (acc[status] || 0) + 1
       return acc
     }, {} as Record<string, number>)
     
-    const porTipo = filteredEvents.reduce((acc, event) => {
-      const tipo = event.extendedProps.tipo
-      acc[tipo] = (acc[tipo] || 0) + 1
+    const byType = filteredEvents.reduce((acc, event) => {
+      const type = event.extendedProps.type
+      acc[type] = (acc[type] || 0) + 1
       return acc
     }, {} as Record<string, number>)
     
     return {
       total,
-      porEstado,
-      porTipo
+      byStatus,
+      byType
     }
   }, [filteredEvents])
 
-  // Verificar conflictos
+  // Check conflicts
   const checkConflicts = useCallback((newEvent: { 
-    local_id: number, 
-    fecha: string, 
-    hora_inicio: string, 
-    hora_fin: string 
-  }): CitaCalendarEvent[] => {
-    const newStart = new Date(`${newEvent.fecha}T${newEvent.hora_inicio}`)
-    const newEnd = new Date(`${newEvent.fecha}T${newEvent.hora_fin}`)
+    location_id: number, 
+    date: string, 
+    start_time: string, 
+    end_time: string 
+  }): CalendarEvent[] => {
+    const newStart = new Date(`${newEvent.date}T${newEvent.start_time}`)
+    const newEnd = new Date(`${newEvent.date}T${newEvent.end_time}`)
     
     return events.filter(event => {
-      // Mismo local y fecha
-      if (event.extendedProps.cita.local_id !== newEvent.local_id) return false
+      // Same location and date
+      if (event.extendedProps.appointment.location_id !== newEvent.location_id) return false
       if (event.start.toDateString() !== newStart.toDateString()) return false
       
-      // Verificar overlap de horarios
+      // Check time overlap
       return (
         (newStart >= event.start && newStart < event.end) ||
         (newEnd > event.start && newEnd <= event.end) ||
@@ -237,7 +237,7 @@ export function useCalendarEvents({ initialEvents = [] }: UseCalendarEventsProps
   }, [events])
 
   return {
-    // Estado
+    // State
     events: filteredEvents,
     allEvents: events,
     loading,
@@ -245,20 +245,20 @@ export function useCalendarEvents({ initialEvents = [] }: UseCalendarEventsProps
     filters,
     eventStats,
     
-    // Acciones
+    // Actions
     addEvent,
     updateEvent,
     removeEvent,
     loadEvents,
     setFilters,
     
-    // Consultas
+    // Queries
     getEventsForDay,
     getEventsInRange,
     searchEvents,
     checkConflicts,
     
-    // Utilidades
-    citaToEvent
+    // Utilities
+    appointmentToEvent
   }
 }
