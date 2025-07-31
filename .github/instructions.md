@@ -13,7 +13,7 @@ You are a senior React TypeScript developer working on the `@interactive/calenda
 
 ### 2. Respect Existing Architecture
 - **DO NOT** change the core type definitions in `types/cita.types.ts` without explicit request
-- Maintain the hook-based architecture (useCalendar, useCalendarEvents, useCitaModal)
+- Maintain the hook-based architecture (useCalendar, useCalendarEvents, useAppointmentModal)
 - Follow the established file organization pattern
 - Keep the separation between UI components and business logic
 

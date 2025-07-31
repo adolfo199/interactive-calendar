@@ -1,16 +1,16 @@
 /**
- * Utilidades para el calendario de citas
+ * Calendar utilities
  * 
- * Funciones helper para manipulación de fechas, horarios y eventos
+ * Helper functions for date, schedule and event manipulation
  */
 
 import { format, addDays, startOfWeek, startOfMonth, isSameDay, isSameMonth, isToday, addMinutes, isAfter, isBefore } from 'date-fns'
 import { es } from 'date-fns/locale'
-import type { Cita, CitaCalendarEvent, TimeSlot, ConflictoHorario, EstadoCita, TipoCita } from '../types/cita.types'
+import type { Appointment, CalendarEvent, TimeSlot, AppointmentStatus, AppointmentType, ScheduleConflict } from '../types/appointment.types'
 
 /**
- * Genera array de días para la vista mensual del calendario
- * Incluye días del mes anterior y siguiente para completar la grilla
+ * Generates array of days for the monthly calendar view
+ * Includes days from previous and next month to complete the grid
  */
 export function getCalendarDays(date: Date): Date[] {
   const startDate = startOfWeek(startOfMonth(date), { weekStartsOn: 1 }) // Empezar el lunes
@@ -39,217 +39,217 @@ export function getWeekDays(date: Date): Date[] {
 }
 
 /**
- * Convierte una cita en evento de calendario
+ * Converts an appointment to a calendar event
  */
-export function citaToCalendarEvent(cita: Cita): CitaCalendarEvent {
-  const fechaBase = new Date(cita.fecha)
-  const [horaInicioHoras, horaInicioMinutos] = cita.hora_inicio.split(':').map(Number)
-  const [horaFinHoras, horaFinMinutos] = cita.hora_fin.split(':').map(Number)
+export function appointmentToCalendarEvent(appointment: Appointment): CalendarEvent {
+  const baseDate = new Date(appointment.date)
+  const [startHours, startMinutes] = appointment.start_time.split(':').map(Number)
+  const [endHours, endMinutes] = appointment.end_time.split(':').map(Number)
   
-  const start = new Date(fechaBase)
-  start.setHours(horaInicioHoras, horaInicioMinutos, 0, 0)
+  const start = new Date(baseDate)
+  start.setHours(startHours, startMinutes, 0, 0)
   
-  const end = new Date(fechaBase)
-  end.setHours(horaFinHoras, horaFinMinutos, 0, 0)
+  const end = new Date(baseDate)
+  end.setHours(endHours, endMinutes, 0, 0)
   
   return {
-    id: cita.id,
-    title: cita.titulo,
+    id: appointment.id,
+    title: appointment.title,
     start,
     end,
     allDay: false,
-    color: getEstadoColor(cita.estado),
-    backgroundColor: getEstadoColor(cita.estado),
-    borderColor: getEstadoColor(cita.estado, 'border'),
-    textColor: getEstadoTextColor(cita.estado),
+    color: getStatusColor(appointment.status),
+    backgroundColor: getStatusColor(appointment.status),
+    borderColor: getStatusColor(appointment.status, 'border'),
+    textColor: getStatusTextColor(appointment.status),
     extendedProps: {
-      cita,
-      estado: cita.estado,
-      tipo: cita.tipo,
-      local: cita.local?.nombre || 'Local no especificado',
-      participantes: cita.participantes,
+      appointment,
+      status: appointment.status,
+      type: appointment.type,
+      location: appointment.location?.name || 'Location not specified',
+      participants: appointment.participants,
     }
   }
 }
 
 /**
- * Obtiene el color según el estado de la cita
+ * Gets the color according to the appointment status
  */
-export function getEstadoColor(estado: EstadoCita, variant: 'bg' | 'border' = 'bg'): string {
+export function getStatusColor(status: AppointmentStatus, variant: 'bg' | 'border' = 'bg'): string {
   const colors = {
-    pendiente: {
+    pending: {
       bg: '#fbbf24', // yellow-400
       border: '#f59e0b' // yellow-500
     },
-    confirmada: {
+    confirmed: {
       bg: '#22c55e', // green-500
       border: '#16a34a' // green-600
     },
-    en_progreso: {
+    in_progress: {
       bg: '#3b82f6', // blue-500
       border: '#2563eb' // blue-600
     },
-    completada: {
+    completed: {
       bg: '#10b981', // emerald-500
       border: '#059669' // emerald-600
     },
-    cancelada: {
+    cancelled: {
       bg: '#ef4444', // red-500
       border: '#dc2626' // red-600
     }
   }
   
-  return colors[estado][variant]
+  return colors[status][variant]
 }
 
 /**
- * Obtiene el color del texto según el estado
+ * Gets the text color according to the status
  */
-export function getEstadoTextColor(estado: EstadoCita): string {
-  // Todos los estados tienen texto blanco excepto pendiente
-  return estado === 'pendiente' ? '#1f2937' : '#ffffff'
+export function getStatusTextColor(status: AppointmentStatus): string {
+  // All statuses have white text except pending
+  return status === 'pending' ? '#1f2937' : '#ffffff'
 }
 
 /**
- * Obtiene el color según el tipo de cita
+ * Gets the color according to the appointment type
  */
-export function getTipoColor(tipo: TipoCita): string {
+export function getTypeColor(type: AppointmentType): string {
   const colors = {
-    reunion: '#3b82f6', // blue-500
-    consulta: '#10b981', // emerald-500
-    mantenimiento: '#f59e0b', // amber-500
-    evento: '#8b5cf6', // violet-500
-    reserva: '#06b6d4', // cyan-500
-    entrenamiento: '#e11d48', // rose-600
+    meeting: '#3b82f6', // blue-500
+    consultation: '#10b981', // emerald-500
+    maintenance: '#f59e0b', // amber-500
+    event: '#8b5cf6', // violet-500
+    reservation: '#06b6d4', // cyan-500
+    training: '#e11d48', // rose-600
     demo: '#7c3aed' // violet-600
   }
   
-  return colors[tipo] || '#6b7280' // gray-500 como fallback
+  return colors[type] || '#6b7280' // gray-500 as fallback
 }
 
 /**
- * Genera slots de tiempo para un día específico
+ * Generates available time slots for a specific date
  */
 export function generateTimeSlots(
-  fecha: Date,
-  horaApertura: string = '09:00',
-  horaCierre: string = '18:00',
-  duracionSlot: number = 30
+  date: Date,
+  openingTime: string = '09:00',
+  closingTime: string = '18:00',
+  slotDuration: number = 30
 ): TimeSlot[] {
   const slots: TimeSlot[] = []
-  const [aperturaHoras, aperturaMinutos] = horaApertura.split(':').map(Number)
-  const [cierreHoras, cierreMinutos] = horaCierre.split(':').map(Number)
+  const [openingHours, openingMinutes] = openingTime.split(':').map(Number)
+  const [closingHours, closingMinutes] = closingTime.split(':').map(Number)
   
-  const apertura = new Date(fecha)
-  apertura.setHours(aperturaHoras, aperturaMinutos, 0, 0)
+  const opening = new Date(date)
+  opening.setHours(openingHours, openingMinutes, 0, 0)
   
-  const cierre = new Date(fecha)
-  cierre.setHours(cierreHoras, cierreMinutos, 0, 0)
+  const closing = new Date(date)
+  closing.setHours(closingHours, closingMinutes, 0, 0)
   
-  let currentTime = new Date(apertura)
+  let currentTime = new Date(opening)
   
-  while (isBefore(currentTime, cierre)) {
+  while (isBefore(currentTime, closing)) {
     slots.push({
-      hora: format(currentTime, 'HH:mm'),
-      disponible: true
+      time: format(currentTime, 'HH:mm'),
+      available: true
     })
     
-    currentTime = addMinutes(currentTime, duracionSlot)
+    currentTime = addMinutes(currentTime, slotDuration)
   }
   
   return slots
 }
 
 /**
- * Verifica si hay conflictos de horario
+ * Checks for schedule conflicts
  */
-export function checkConflictoHorario(
-  nuevaCita: {
-    fecha: string
-    hora_inicio: string
-    hora_fin: string
-    local_id: number
-    participantes: number
+export function checkScheduleConflict(
+  newAppointment: {
+    date: string
+    start_time: string
+    end_time: string
+    location_id: number
+    participants: number
   },
-  citasExistentes: Cita[],
-  capacidadLocal: number
-): ConflictoHorario | null {
-  // Convertir a objetos Date para comparación
-  const fechaNueva = new Date(nuevaCita.fecha)
-  const [inicioH, inicioM] = nuevaCita.hora_inicio.split(':').map(Number)
-  const [finH, finM] = nuevaCita.hora_fin.split(':').map(Number)
+  existingAppointments: Appointment[],
+  locationCapacity: number
+): ScheduleConflict | null {
+  // Convert to Date objects for comparison
+  const newDate = new Date(newAppointment.date)
+  const [startH, startM] = newAppointment.start_time.split(':').map(Number)
+  const [endH, endM] = newAppointment.end_time.split(':').map(Number)
   
-  const inicioNueva = new Date(fechaNueva)
-  inicioNueva.setHours(inicioH, inicioM, 0, 0)
+  const newStart = new Date(newDate)
+  newStart.setHours(startH, startM, 0, 0)
   
-  const finNueva = new Date(fechaNueva)
-  finNueva.setHours(finH, finM, 0, 0)
+  const newEnd = new Date(newDate)
+  newEnd.setHours(endH, endM, 0, 0)
   
-  // Filtrar citas del mismo local y fecha, excluyendo canceladas
-  const citasMismoLocal = citasExistentes.filter(cita => 
-    cita.local_id === nuevaCita.local_id &&
-    cita.fecha === nuevaCita.fecha &&
-    cita.estado !== 'cancelada'
+  // Filter appointments in the same location and date, excluding cancelled ones
+  const appointmentsSameLocation = existingAppointments.filter(appointment => 
+    appointment.location_id === newAppointment.location_id &&
+    appointment.date === newAppointment.date &&
+    appointment.status !== 'cancelled'
   )
   
-  // Verificar overlaps de horario
-  const citasConflicto = citasMismoLocal.filter(cita => {
-    const [cInicioH, cInicioM] = cita.hora_inicio.split(':').map(Number)
-    const [cFinH, cFinM] = cita.hora_fin.split(':').map(Number)
+  // Check for time overlaps
+  const conflictingAppointments = appointmentsSameLocation.filter(appointment => {
+    const [cStartH, cStartM] = appointment.start_time.split(':').map(Number)
+    const [cEndH, cEndM] = appointment.end_time.split(':').map(Number)
     
-    const inicioCita = new Date(fechaNueva)
-    inicioCita.setHours(cInicioH, cInicioM, 0, 0)
+    const appointmentStart = new Date(newDate)
+    appointmentStart.setHours(cStartH, cStartM, 0, 0)
     
-    const finCita = new Date(fechaNueva)
-    finCita.setHours(cFinH, cFinM, 0, 0)
+    const appointmentEnd = new Date(newDate)
+    appointmentEnd.setHours(cEndH, cEndM, 0, 0)
     
-    // Verificar si hay overlap
+    // Check if there's overlap
     return (
-      (isAfter(inicioNueva, inicioCita) && isBefore(inicioNueva, finCita)) ||
-      (isAfter(finNueva, inicioCita) && isBefore(finNueva, finCita)) ||
-      (isBefore(inicioNueva, inicioCita) && isAfter(finNueva, finCita)) ||
-      (inicioNueva.getTime() === inicioCita.getTime())
+      (isAfter(newStart, appointmentStart) && isBefore(newStart, appointmentEnd)) ||
+      (isAfter(newEnd, appointmentStart) && isBefore(newEnd, appointmentEnd)) ||
+      (isBefore(newStart, appointmentStart) && isAfter(newEnd, appointmentEnd)) ||
+      (newStart.getTime() === appointmentStart.getTime())
     )
   })
   
-  if (citasConflicto.length > 0) {
+  if (conflictingAppointments.length > 0) {
     return {
-      tipo: 'overlap',
-      mensaje: `Conflicto de horario con ${citasConflicto.length} cita(s) existente(s)`,
-      citas_conflicto: citasConflicto,
-      sugerencias: [
-        'Selecciona otro horario',
-        'Elige un local diferente',
-        'Modifica la duración de la cita'
+      type: 'overlap',
+      message: `Schedule conflict with ${conflictingAppointments.length} existing appointment(s)`,
+      conflicting_appointments: conflictingAppointments,
+      suggestions: [
+        'Select a different time',
+        'Choose a different location',
+        'Modify the appointment duration'
       ]
     }
   }
   
-  // Verificar capacidad (suma de participantes en el mismo slot)
-  const participantesEnSlot = citasMismoLocal
-    .filter(cita => {
-      const [cInicioH, cInicioM] = cita.hora_inicio.split(':').map(Number)
-      const [cFinH, cFinM] = cita.hora_fin.split(':').map(Number)
+  // Check capacity (sum of participants in the same time slot)
+  const participantsInSlot = appointmentsSameLocation
+    .filter(appointment => {
+      const [cStartH, cStartM] = appointment.start_time.split(':').map(Number)
+      const [cEndH, cEndM] = appointment.end_time.split(':').map(Number)
       
-      const inicioCita = new Date(fechaNueva)
-      inicioCita.setHours(cInicioH, cInicioM, 0, 0)
+      const appointmentStart = new Date(newDate)
+      appointmentStart.setHours(cStartH, cStartM, 0, 0)
       
-      const finCita = new Date(fechaNueva)
-      finCita.setHours(cFinH, cFinM, 0, 0)
+      const appointmentEnd = new Date(newDate)
+      appointmentEnd.setHours(cEndH, cEndM, 0, 0)
       
-      // Overlap parcial o total
-      return !(isAfter(inicioNueva, finCita) || isBefore(finNueva, inicioCita))
+      // Partial or total overlap
+      return !(isAfter(newStart, appointmentEnd) || isBefore(newEnd, appointmentStart))
     })
-    .reduce((total, cita) => total + cita.participantes, 0)
+    .reduce((total, appointment) => total + appointment.participants, 0)
   
-  if (participantesEnSlot + nuevaCita.participantes > capacidadLocal) {
+  if (participantsInSlot + newAppointment.participants > locationCapacity) {
     return {
-      tipo: 'capacity',
-      mensaje: `Capacidad excedida. Local: ${capacidadLocal}, Solicitado: ${participantesEnSlot + nuevaCita.participantes}`,
-      sugerencias: [
-        'Reduce el número de participantes',
-        'Selecciona un local con mayor capacidad',
-        'Divide la cita en varias sesiones'
+      type: 'capacity',
+      message: `Capacity exceeded. Location: ${locationCapacity}, Requested: ${participantsInSlot + newAppointment.participants}`,
+      suggestions: [
+        'Reduce the number of participants',
+        'Select a location with greater capacity',
+        'Split the appointment into multiple sessions'
       ]
     }
   }
@@ -258,17 +258,17 @@ export function checkConflictoHorario(
 }
 
 /**
- * Formatea una fecha para mostrar
+ * Formats a date for display
  */
 export function formatDateForDisplay(date: Date, formatStr: string = 'dd/MM/yyyy'): string {
   return format(date, formatStr, { locale: es })
 }
 
 /**
- * Formatea un rango de tiempo
+ * Formats a time range
  */
-export function formatTimeRange(horaInicio: string, horaFin: string): string {
-  return `${horaInicio} - ${horaFin}`
+export function formatTimeRange(startTime: string, endTime: string): string {
+  return `${startTime} - ${endTime}`
 }
 
 /**
@@ -295,21 +295,21 @@ export function isWorkingDay(date: Date, diasLaborales: number[] = [1, 2, 3, 4, 
 }
 
 /**
- * Obtiene eventos para un día específico
+ * Gets events for a specific day
  */
-export function getEventsForDay(events: CitaCalendarEvent[], date: Date): CitaCalendarEvent[] {
+export function getEventsForDay(events: CalendarEvent[], date: Date): CalendarEvent[] {
   return events.filter(event => isSameDay(event.start, date))
 }
 
 /**
- * Verifica si una fecha es hoy
+ * Checks if a date is today
  */
 export function isDateToday(date: Date): boolean {
   return isToday(date)
 }
 
 /**
- * Verifica si una fecha pertenece al mes actual mostrado
+ * Checks if a date belongs to the current displayed month
  */
 export function isDateInCurrentMonth(date: Date, currentMonth: Date): boolean {
   return isSameMonth(date, currentMonth)

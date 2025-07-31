@@ -1,508 +1,447 @@
 /**
- * Datos de ejemplo para el módulo de citas
+ * Example data for the appointments module
  * 
- * Proporciona datos mock para la demo del calendario
+ * Provides mock data for calendar demo
  */
 
-import type { Cita, CitaCalendarEvent } from './types/cita.types'
+import type { Appointment, CalendarEvent } from './types/appointment.types'
 
-// Citas de ejemplo
-export const citasEjemplo: Cita[] = [
+// Example appointments
+export const exampleAppointments: Appointment[] = [
   {
     id: 1,
-    codigo: 'CITA-001',
-    titulo: 'Reunión con Cliente ABC',
-    descripcion: 'Discutir propuesta de proyecto',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 1,
-    categoria_id: 1,
-    cliente_nombre: 'Juan Pérez',
-    cliente_email: 'juan.perez@email.com',
-    cliente_telefono: '+54 11 1234-5678',
-    fecha: new Date().toISOString().split('T')[0], // Hoy
-    hora_inicio: '09:00',
-    hora_fin: '10:00',
-    duracion_minutos: 60,
-    tipo: 'reunion',
-    estado: 'confirmada',
-    participantes: 3,
-    observaciones: 'Traer laptop y presentación',
-    configuracion: {},
+    code: 'APPT-001',
+    title: 'Meeting with Client ABC',
+    description: 'Discuss project proposal',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 1,
+    category_id: 1,
+    client_name: 'John Doe',
+    client_email: 'john.doe@email.com',
+    client_phone: '+54 11 1234-5678',
+    date: new Date().toISOString().split('T')[0], // Today
+    start_time: '09:00',
+    end_time: '10:00',
+    duration_minutes: 60,
+    type: 'meeting',
+    status: 'confirmed',
+    participants: 3,
+    notes: 'Bring laptop and presentation',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    empresa: {
+    company: {
       id: 1,
-      nombre: 'Mi Empresa',
-      codigo: 'EMP001'
+      name: 'My Company',
+      code: 'EMP001'
     },
-    sucursal: {
+    branch: {
       id: 1,
-      nombre: 'Sucursal Centro',
-      codigo: 'SUC001',
-      direccion: 'Av. Principal 123'
+      name: 'Downtown Branch',
+      code: 'BRANCH001',
+      address: 'Main Street 123'
     },
-    local: {
+    location: {
       id: 1,
-      nombre: 'Sala de Juntas',
-      codigo: 'SAL001',
-      capacidad: 8,
-      categoria: {
+      name: 'Meeting Room',
+      code: 'ROOM001',
+      capacity: 8,
+      category: {
         id: 1,
-        nombre: 'Salas de Reuniones',
+        name: 'Meeting Rooms',
         color: '#3b82f6'
       }
     }
   },
   {
     id: 2,
-    codigo: 'CITA-002',
-    titulo: 'Consulta Técnica',
-    descripcion: 'Revisión de sistema',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 2,
-    cliente_nombre: 'María González',
-    cliente_email: 'maria.gonzalez@email.com',
-    fecha: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Mañana
-    hora_inicio: '14:00',
-    hora_fin: '15:30',
-    duracion_minutos: 90,
-    tipo: 'consulta',
-    estado: 'pendiente',
-    participantes: 2,
-    observaciones: 'Revisar logs del sistema',
-    configuracion: {},
+    code: 'APPT-002',
+    title: 'Technical Consultation',
+    description: 'System review',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 2,
+    client_name: 'Maria Gonzalez',
+    client_email: 'maria.gonzalez@email.com',
+    date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Tomorrow
+    start_time: '14:00',
+    end_time: '15:30',
+    duration_minutes: 90,
+    type: 'consultation',
+    status: 'pending',
+    participants: 2,
+    notes: 'Review system logs',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 2,
-      nombre: 'Laboratorio IT',
-      codigo: 'LAB001',
-      capacidad: 4
+      name: 'IT Lab',
+      code: 'LAB001',
+      capacity: 4
     }
   },
   {
     id: 3,
-    codigo: 'CITA-003',
-    titulo: 'Evento de Lanzamiento',
-    descripcion: 'Presentación del nuevo producto',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 3,
-    cliente_nombre: 'Carlos Rodríguez',
-    cliente_telefono: '+54 11 9876-5432',
-    fecha: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Pasado mañana
-    hora_inicio: '18:00',
-    hora_fin: '21:00',
-    duracion_minutos: 180,
-    tipo: 'evento',
-    estado: 'confirmada',
-    participantes: 50,
-    observaciones: 'Preparar catering y presentación',
-    configuracion: {},
+    code: 'APPT-003',
+    title: 'Product Launch Event',
+    description: 'New product presentation',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 3,
+    client_name: 'Carlos Rodriguez',
+    client_phone: '+54 11 9876-5432',
+    date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Day after tomorrow
+    start_time: '18:00',
+    end_time: '21:00',
+    duration_minutes: 180,
+    type: 'event',
+    status: 'confirmed',
+    participants: 50,
+    notes: 'Prepare catering and presentation',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 3,
-      nombre: 'Auditorio Principal',
-      codigo: 'AUD001',
-      capacidad: 100
+      name: 'Main Auditorium',
+      code: 'AUD001',
+      capacity: 100
     }
   },
   {
     id: 4,
-    codigo: 'CITA-004',
-    titulo: 'Mantenimiento Programado',
-    descripcion: 'Revisión de equipos',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 1,
-    cliente_nombre: 'Servicio Técnico',
-    fecha: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Próxima semana
-    hora_inicio: '08:00',
-    hora_fin: '12:00',
-    duracion_minutos: 240,
-    tipo: 'mantenimiento',
-    estado: 'pendiente',
-    participantes: 1,
-    observaciones: 'Revisar aire acondicionado y proyector',
-    configuracion: {},
+    code: 'APPT-004',
+    title: 'Scheduled Maintenance',
+    description: 'Equipment review',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 1,
+    client_name: 'Technical Service',
+    date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Next week
+    start_time: '08:00',
+    end_time: '12:00',
+    duration_minutes: 240,
+    type: 'maintenance',
+    status: 'pending',
+    participants: 1,
+    notes: 'Check air conditioning and projector',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 1,
-      nombre: 'Sala de Juntas',
-      codigo: 'SAL001',
-      capacidad: 8
+      name: 'Meeting Room',
+      code: 'ROOM001',
+      capacity: 8
     }
   },
   {
     id: 5,
-    codigo: 'CITA-005',
-    titulo: 'Reserva Personal',
-    descripcion: 'Celebración de cumpleaños',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 4,
-    cliente_nombre: 'Ana López',
-    cliente_email: 'ana.lopez@email.com',
-    cliente_telefono: '+54 11 5555-1234',
-    fecha: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // En 3 días
-    hora_inicio: '19:00',
-    hora_fin: '23:00',
-    duracion_minutos: 240,
-    tipo: 'reserva',
-    estado: 'confirmada',
-    participantes: 15,
-    observaciones: 'Decoración incluida',
-    configuracion: {},
+    code: 'APPT-005',
+    title: 'Personal Reservation',
+    description: 'Birthday celebration',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 4,
+    client_name: 'Ana Lopez',
+    client_email: 'ana.lopez@email.com',
+    client_phone: '+54 11 5555-1234',
+    date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // In 3 days
+    start_time: '19:00',
+    end_time: '23:00',
+    duration_minutes: 240,
+    type: 'reservation',
+    status: 'confirmed',
+    participants: 15,
+    notes: 'Decoration included',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 4,
-      nombre: 'Salón de Eventos',
-      codigo: 'SAL002',
-      capacidad: 30
+      name: 'Event Hall',
+      code: 'HALL002',
+      capacity: 30
     }
   },
-  // Más eventos para esta semana con mayor variedad
   {
     id: 6,
-    codigo: 'CITA-006',
-    titulo: 'Entrenamiento Producto',
-    descripcion: 'Capacitación para nuevo personal',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 2,
-    cliente_nombre: 'RR.HH.',
-    fecha: new Date().toISOString().split('T')[0], // Hoy
-    hora_inicio: '15:00',
-    hora_fin: '17:00',
-    duracion_minutos: 120,
-    tipo: 'entrenamiento',
-    estado: 'en_progreso',
-    participantes: 8,
-    observaciones: 'Sesión en curso - Traer manuales y laptop',
-    configuracion: {},
+    code: 'APPT-006',
+    title: 'Product Training',
+    description: 'Training for new staff',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 2,
+    client_name: 'HR Department',
+    date: new Date().toISOString().split('T')[0], // Today
+    start_time: '15:00',
+    end_time: '17:00',
+    duration_minutes: 120,
+    type: 'training',
+    status: 'in_progress',
+    participants: 8,
+    notes: 'Session in progress - Bring manuals and laptop',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 2,
-      nombre: 'Laboratorio 12',
-      codigo: 'LAB012',
-      capacidad: 12
+      name: 'Lab 12',
+      code: 'LAB012',
+      capacity: 12
     }
   },
   {
     id: 7,
-    codigo: 'CITA-007',
-    titulo: 'Demo Producto X',
-    descripcion: 'Demostración para cliente potencial',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 3,
-    cliente_nombre: 'Roberto Silva',
-    cliente_email: 'roberto.silva@empresa.com',
-    fecha: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Mañana
-    hora_inicio: '10:30',
-    hora_fin: '12:00',
-    duracion_minutos: 90,
-    tipo: 'demo',
-    estado: 'pendiente',
-    participantes: 4,
-    observaciones: 'Preparar laptop y proyector',
-    configuracion: {},
+    code: 'APPT-007',
+    title: 'Product X Demo',
+    description: 'Demo for potential client',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 3,
+    client_name: 'Roberto Silva',
+    client_email: 'roberto.silva@company.com',
+    date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Tomorrow
+    start_time: '10:30',
+    end_time: '12:00',
+    duration_minutes: 90,
+    type: 'demo',
+    status: 'pending',
+    participants: 4,
+    notes: 'Prepare laptop and projector',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 3,
-      nombre: 'Sala de Demos',
-      codigo: 'DEMO001',
-      capacidad: 6
+      name: 'Demo Room',
+      code: 'DEMO001',
+      capacity: 6
     }
   },
   {
     id: 8,
-    codigo: 'CITA-008',
-    titulo: 'Reunión de Ventas',
-    descripcion: 'Revisión de métricas mensuales',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 1,
-    cliente_nombre: 'Equipo Ventas',
-    fecha: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Pasado mañana
-    hora_inicio: '09:30',
-    hora_fin: '11:00',
-    duracion_minutos: 90,
-    tipo: 'reunion',
-    estado: 'pendiente',
-    participantes: 6,
-    observaciones: 'Traer reportes de ventas',
-    configuracion: {},
+    code: 'APPT-008',
+    title: 'Sales Meeting',
+    description: 'Monthly metrics review',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 1,
+    client_name: 'Sales Team',
+    date: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Day after tomorrow
+    start_time: '09:30',
+    end_time: '11:00',
+    duration_minutes: 90,
+    type: 'meeting',
+    status: 'pending',
+    participants: 6,
+    notes: 'Bring sales reports',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 1,
-      nombre: 'Sala de Juntas',
-      codigo: 'SAL001',
-      capacidad: 8
+      name: 'Meeting Room',
+      code: 'ROOM001',
+      capacity: 8
     }
   },
   {
     id: 9,
-    codigo: 'CITA-009',
-    titulo: 'Consulta Especializada',
-    descripcion: 'Asesoría técnica avanzada',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 2,
-    cliente_nombre: 'Patricia Morales',
-    cliente_email: 'patricia.morales@tech.com',
-    fecha: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Ayer
-    hora_inicio: '11:00',
-    hora_fin: '12:30',
-    duracion_minutos: 90,
-    tipo: 'consulta',
-    estado: 'completada',
-    participantes: 3,
-    observaciones: 'Sesión completada exitosamente',
-    configuracion: {},
+    code: 'APPT-009',
+    title: 'Specialized Consultation',
+    description: 'Advanced technical advisory',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 2,
+    client_name: 'Patricia Morales',
+    client_email: 'patricia.morales@tech.com',
+    date: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Yesterday
+    start_time: '11:00',
+    end_time: '12:30',
+    duration_minutes: 90,
+    type: 'consultation',
+    status: 'completed',
+    participants: 3,
+    notes: 'Session completed successfully',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 2,
-      nombre: 'Laboratorio 12',
-      codigo: 'LAB012',
-      capacidad: 12
+      name: 'Lab 12',
+      code: 'LAB012',
+      capacity: 12
     }
   },
   {
     id: 10,
-    codigo: 'CITA-010',
-    titulo: 'Evento Networking',
-    descripcion: 'Encuentro empresarial',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 4,
-    cliente_nombre: 'Cámara de Comercio',
-    fecha: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // En 3 días
-    hora_inicio: '17:00',
-    hora_fin: '20:00',
-    duracion_minutos: 180,
-    tipo: 'demo',
-    estado: 'confirmada',
-    participantes: 25,
-    observaciones: 'Incluye catering y material promocional',
-    configuracion: {},
+    code: 'APPT-010',
+    title: 'Networking Event',
+    description: 'Business meeting',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 4,
+    client_name: 'Chamber of Commerce',
+    date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // In 3 days
+    start_time: '17:00',
+    end_time: '20:00',
+    duration_minutes: 180,
+    type: 'demo',
+    status: 'confirmed',
+    participants: 25,
+    notes: 'Includes catering and promotional material',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 4,
-      nombre: 'Salón Principal',
-      codigo: 'SAL002',
-      capacidad: 40
+      name: 'Main Hall',
+      code: 'HALL002',
+      capacity: 40
     }
   },
   {
     id: 11,
-    codigo: 'CITA-011',
-    titulo: 'Sesión Cancelada',
-    descripcion: 'Reunión que fue cancelada',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 1,
-    cliente_nombre: 'Cliente Inactivo',
-    fecha: '2025-07-29', // 29 de julio - fecha fija para que aparezca
-    hora_inicio: '16:00',
-    hora_fin: '17:00',
-    duracion_minutos: 60,
-    tipo: 'reunion',
-    estado: 'cancelada',
-    participantes: 4,
-    observaciones: 'Cancelada por el cliente',
-    configuracion: {},
+    code: 'APPT-011',
+    title: 'Cancelled Session',
+    description: 'Meeting that was cancelled',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 1,
+    client_name: 'Inactive Client',
+    date: '2025-07-29', // July 29 - fixed date
+    start_time: '16:00',
+    end_time: '17:00',
+    duration_minutes: 60,
+    type: 'meeting',
+    status: 'cancelled',
+    participants: 4,
+    notes: 'Cancelled by client',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 1,
-      nombre: 'Sala de Juntas',
-      codigo: 'SAL001',
-      capacidad: 8
+      name: 'Meeting Room',
+      code: 'ROOM001',
+      capacity: 8
     }
   },
   {
     id: 12,
-    codigo: 'CITA-012',
-    titulo: 'Workshop Innovación',
-    descripcion: 'Taller de metodologías ágiles',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 2,
-    cliente_nombre: 'Equipo Desarrollo',
-    fecha: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // En 4 días
-    hora_inicio: '13:30',
-    hora_fin: '16:30',
-    duracion_minutos: 180,
-    tipo: 'entrenamiento',
-    estado: 'pendiente',
-    participantes: 10,
-    observaciones: 'Incluye almuerzo y certificado',
-    configuracion: {},
+    code: 'APPT-012',
+    title: 'Innovation Workshop',
+    description: 'Agile methodologies workshop',
+    company_id: 1,
+    branch_id: 1,
+    location_id: 2,
+    client_name: 'Development Team',
+    date: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // In 4 days
+    start_time: '13:30',
+    end_time: '16:30',
+    duration_minutes: 180,
+    type: 'training',
+    status: 'pending',
+    participants: 10,
+    notes: 'Includes lunch and certificate',
+    configuration: {},
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
     created_by: 1,
     modified_by: 1,
-    local: {
+    location: {
       id: 2,
-      nombre: 'Laboratorio 12',
-      codigo: 'LAB012',
-      capacidad: 12
-    }
-  },
-  {
-    id: 13,
-    codigo: 'CITA-013',
-    titulo: 'Reunión Cancelada',
-    descripcion: 'Reunión cancelada por el cliente',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 2,
-    cliente_nombre: 'Empresa ABC',
-    cliente_email: 'contacto@empresa-abc.com',
-    fecha: '2025-07-30', // 30 de julio
-    hora_inicio: '11:00',
-    hora_fin: '12:00',
-    duracion_minutos: 60,
-    tipo: 'reunion',
-    estado: 'cancelada',
-    participantes: 5,
-    observaciones: 'Cliente canceló por motivos personales',
-    configuracion: {},
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    created_by: 1,
-    modified_by: 1,
-    local: {
-      id: 2,
-      nombre: 'Laboratorio IT',
-      codigo: 'LAB001',
-      capacidad: 4
-    }
-  },
-  {
-    id: 14,
-    codigo: 'CITA-014',
-    titulo: 'Cita Cancelada',
-    descripcion: 'Cita cancelada de último momento',
-    empresa_id: 1,
-    sucursal_id: 1,
-    local_id: 1,
-    cliente_nombre: 'Pedro Martínez',
-    cliente_email: 'pedro.martinez@email.com',
-    fecha: '2025-08-03', // 3 de agosto
-    hora_inicio: '09:30',
-    hora_fin: '10:30',
-    duracion_minutos: 60,
-    tipo: 'consulta',
-    estado: 'cancelada',
-    participantes: 2,
-    observaciones: 'Cliente canceló por enfermedad',
-    configuracion: {},
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    created_by: 1,
-    modified_by: 1,
-    local: {
-      id: 1,
-      nombre: 'Sala de Juntas',
-      codigo: 'SAL001',
-      capacidad: 8
+      name: 'Lab 12',
+      code: 'LAB012',
+      capacity: 12
     }
   }
 ]
 
-// Convertir citas a eventos de calendario
-function citaToCalendarEvent(cita: Cita): CitaCalendarEvent {
-  const fechaBase = new Date(cita.fecha)
-  const [horaInicioHoras, horaInicioMinutos] = cita.hora_inicio.split(':').map(Number)
-  const [horaFinHoras, horaFinMinutos] = cita.hora_fin.split(':').map(Number)
+// Convert appointments to calendar events
+function appointmentToCalendarEvent(appointment: Appointment): CalendarEvent {
+  const dateBase = new Date(appointment.date)
+  const [startHours, startMinutes] = appointment.start_time.split(':').map(Number)
+  const [endHours, endMinutes] = appointment.end_time.split(':').map(Number)
   
-  const start = new Date(fechaBase)
-  start.setHours(horaInicioHoras, horaInicioMinutos, 0, 0)
+  const start = new Date(dateBase)
+  start.setHours(startHours, startMinutes, 0, 0)
   
-  const end = new Date(fechaBase)
-  end.setHours(horaFinHoras, horaFinMinutos, 0, 0)
+  const end = new Date(dateBase)
+  end.setHours(endHours, endMinutes, 0, 0)
   
-  // Colores basados únicamente en ESTADO (más intuitivo y consistente)
-  const getEstadoColor = (estado: string) => {
-    switch (estado.toLowerCase()) {
-      case 'confirmada': return '#10b981'    // Verde - Cita confirmada
-      case 'pendiente': return '#f59e0b'     // Amarillo - Por confirmar  
-      case 'cancelada': return '#ef4444'     // Rojo - Cancelada
-      case 'completada': return '#3b82f6'    // Azul - Completada
-      case 'en_progreso': return '#8b5cf6'   // Púrpura - En progreso
-      default: return '#6b7280'              // Gris - Estado desconocido
+  // Colors based only on STATUS (more intuitive and consistent)
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'confirmed': return '#10b981'    // Green - Confirmed appointment
+      case 'pending': return '#f59e0b'      // Yellow - To be confirmed  
+      case 'cancelled': return '#ef4444'    // Red - Cancelled
+      case 'completed': return '#3b82f6'    // Blue - Completed
+      case 'in_progress': return '#8b5cf6'  // Purple - In progress
+      default: return '#6b7280'             // Gray - Unknown status
     }
   }
   
-  const color = getEstadoColor(cita.estado)
+  const color = getStatusColor(appointment.status)
   
   return {
-    id: cita.id,
-    title: cita.titulo,
+    id: appointment.id,
+    title: appointment.title,
     start,
     end,
     allDay: false,
     color,
     backgroundColor: color,
     borderColor: color,
-    textColor: cita.estado === 'pendiente' ? '#1f2937' : '#ffffff',
+    textColor: appointment.status === 'pending' ? '#1f2937' : '#ffffff',
     extendedProps: {
-      cita,
-      estado: cita.estado,
-      tipo: cita.tipo,
-      local: cita.local?.nombre || 'Local no especificado',
-      participantes: cita.participantes,
+      appointment,
+      status: appointment.status,
+      type: appointment.type,
+      location: appointment.location?.name || 'Location not specified',
+      participants: appointment.participants,
     }
   }
 }
 
-// Eventos de ejemplo para el calendario
-export const eventosEjemplo: CitaCalendarEvent[] = citasEjemplo.map(citaToCalendarEvent)
+// Example events for calendar
+export const exampleEvents: CalendarEvent[] = exampleAppointments.map(appointmentToCalendarEvent)
 
-// Función para obtener eventos de ejemplo con fecha relativa
-export function getEventosEjemplo(): CitaCalendarEvent[] {
-  return eventosEjemplo
+// Function to get example events with relative date
+export function getExampleEvents(): CalendarEvent[] {
+  return exampleEvents
 }
 
-// Función para simular carga de datos
-export function simulateDataLoad(): Promise<CitaCalendarEvent[]> {
+// Function to simulate data loading
+export function simulateDataLoad(): Promise<CalendarEvent[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(getEventosEjemplo())
-    }, 1000) // Simular 1 segundo de carga
+      resolve(getExampleEvents())
+    }, 1000) // Simulate 1 second loading
   })
 }

@@ -1,22 +1,24 @@
 /**
- * Componente de vista diaria del calendario
+ * Daily calendar view component
  * 
- * Muestra una columna con intervalos de tiempo para un día específico
+ * Shows a column with time intervals for a specific day
  */
 
 import { cn } from './utils'
-import type { CitaCalendarEvent } from './types/cita.types'
+import type { CalendarEvent } from './types/appointment.types'
+import { useCalendarTranslations } from './hooks/useCalendarTranslations'
 
 interface CalendarDayProps {
-  events: CitaCalendarEvent[]
+  events: CalendarEvent[]
   currentDate: Date
   selectedDate: Date | null
   onDateClick?: (date: Date) => void
-  onEventClick?: (event: CitaCalendarEvent) => void
+  onEventClick?: (event: CalendarEvent) => void
   loading?: boolean
+  locale?: string
 }
 
-// Generar intervalos de tiempo de 30 minutos
+// Generate 30-minute time slots
 function generateTimeSlots(): string[] {
   const slots: string[] = []
   for (let hour = 7; hour <= 22; hour++) {
@@ -26,8 +28,8 @@ function generateTimeSlots(): string[] {
   return slots
 }
 
-// Verificar si un evento está en un slot de tiempo específico
-function isEventInTimeSlot(event: CitaCalendarEvent, timeSlot: string): boolean {
+// Check if an event is in a specific time slot
+function isEventInTimeSlot(event: CalendarEvent, timeSlot: string): boolean {
   const eventDate = new Date(event.start)
   
   const [slotHour, slotMinute] = timeSlot.split(':').map(Number)
@@ -39,23 +41,23 @@ function isEventInTimeSlot(event: CitaCalendarEvent, timeSlot: string): boolean 
   return eventStartTime <= slotTime && eventEndTime > slotTime
 }
 
-// Calcular la duración del evento en slots
-function getEventDuration(event: CitaCalendarEvent): number {
+// Calculate event duration in slots
+function getEventDuration(event: CalendarEvent): number {
   const start = new Date(event.start)
   const end = new Date(event.end)
   const durationMinutes = (end.getTime() - start.getTime()) / (1000 * 60)
-  return Math.ceil(durationMinutes / 30) // Redondear hacia arriba a slots de 30 min
+  return Math.ceil(durationMinutes / 30) // Round up to 30-min slots
 }
 
-// Verificar si es el primer slot del evento
-function isEventStart(event: CitaCalendarEvent, timeSlot: string): boolean {
+// Check if it's the first slot of the event
+function isEventStart(event: CalendarEvent, timeSlot: string): boolean {
   const eventDate = new Date(event.start)
   
   const [slotHour, slotMinute] = timeSlot.split(':').map(Number)
   const eventHour = eventDate.getHours()
   const eventMinute = eventDate.getMinutes()
   
-  // Ajustar a la grilla de 30 minutos más cercana
+  // Adjust to nearest 30-minute grid
   const adjustedEventMinute = eventMinute < 30 ? 0 : 30
   
   return eventHour === slotHour && adjustedEventMinute === slotMinute
@@ -66,14 +68,19 @@ export function CalendarDay({
   currentDate,
   onDateClick,
   onEventClick,
-  loading = false
+  loading = false,
+  locale = 'es'
 }: CalendarDayProps) {
   
+  const { t } = useCalendarTranslations({ locale: locale as 'en' | 'es' })
   const timeSlots = generateTimeSlots()
   const today = new Date()
   const isToday = currentDate.toDateString() === today.toDateString()
   
-  // Filtrar eventos del día actual
+  // Convert locale to browser locale format
+  const browserLocale = locale === 'en' ? 'en-US' : 'es-ES'
+  
+  // Filter events for current day
   const dayEvents = events.filter(event => {
     const eventDate = new Date(event.start)
     return eventDate.toDateString() === currentDate.toDateString()
@@ -84,7 +91,9 @@ export function CalendarDay({
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-sm text-muted-foreground">Cargando vista diaria...</p>
+          <p className="text-sm text-muted-foreground">
+            {t('loading.dailyView')}
+          </p>
         </div>
       </div>
     )
@@ -92,7 +101,7 @@ export function CalendarDay({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Encabezado del día */}
+      {/* Day header */}
       <div className="border-b bg-muted/30">
         <div 
           className={cn(
@@ -102,7 +111,7 @@ export function CalendarDay({
           onClick={() => onDateClick?.(currentDate)}
         >
           <div className="text-sm text-muted-foreground uppercase tracking-wide">
-            {currentDate.toLocaleDateString('es-ES', { weekday: 'long' })}
+            {currentDate.toLocaleDateString(browserLocale, { weekday: 'long' })}
           </div>
           <div className={cn(
             "text-2xl font-bold",
@@ -111,7 +120,7 @@ export function CalendarDay({
             {currentDate.getDate()}
           </div>
           <div className="text-sm text-muted-foreground">
-            {currentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+            {currentDate.toLocaleDateString(browserLocale, { month: 'long', year: 'numeric' })}
           </div>
           {isToday && (
             <div className="w-3 h-3 bg-primary rounded-full mt-1"></div>
@@ -119,11 +128,14 @@ export function CalendarDay({
         </div>
       </div>
 
-      {/* Resumen de eventos del día */}
+      {/* Day events summary */}
       {dayEvents.length > 0 && (
         <div className="border-b bg-muted/10 p-4">
           <div className="text-sm font-medium mb-2">
-            {dayEvents.length} evento{dayEvents.length !== 1 ? 's' : ''} programado{dayEvents.length !== 1 ? 's' : ''}
+            {locale === 'en' 
+              ? `${dayEvents.length} scheduled ${dayEvents.length === 1 ? 'appointment' : 'appointments'}`
+              : `${dayEvents.length} evento${dayEvents.length !== 1 ? 's' : ''} programado${dayEvents.length !== 1 ? 's' : ''}`
+            }
           </div>
           <div className="flex flex-wrap gap-2">
             {dayEvents.map(event => (
@@ -137,17 +149,17 @@ export function CalendarDay({
                 onClick={() => onEventClick?.(event)}
                 title={event.title}
               >
-                {event.extendedProps.estado}
+                {t(`appointments:status.${event.extendedProps.status}`)}
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Grid de tiempo y eventos */}
+      {/* Time grid and events */}
       <div className="flex-1 overflow-auto">
         <div className="flex">
-          {/* Columna de horas */}
+          {/* Time column */}
           <div className="w-20 flex-shrink-0 border-r bg-background">
             {timeSlots.map((timeSlot) => (
               <div key={timeSlot} className="h-16 border-b border-border/50 flex items-start justify-end pr-3 pt-2">
@@ -158,7 +170,7 @@ export function CalendarDay({
             ))}
           </div>
           
-          {/* Columna de eventos */}
+          {/* Events column */}
           <div className="flex-1 relative">
             {timeSlots.map((timeSlot) => {
               const eventsInSlot = dayEvents.filter(event => 
@@ -174,7 +186,7 @@ export function CalendarDay({
                   )}
                   onClick={() => onDateClick?.(currentDate)}
                 >
-                  {/* Renderizar eventos que comienzan en este slot */}
+                  {/* Render events that start in this slot */}
                   {eventsInSlot.map(event => {
                     if (!isEventStart(event, timeSlot)) return null
                     
@@ -190,7 +202,7 @@ export function CalendarDay({
                         style={{
                           backgroundColor: event.backgroundColor,
                           color: event.textColor,
-                          height: `${duration * 64 - 4}px`, // 64px por slot menos padding
+                          height: `${duration * 64 - 4}px`, // 64px per slot minus padding
                           top: '2px',
                           borderColor: event.borderColor
                         }}
@@ -203,23 +215,23 @@ export function CalendarDay({
                           {event.title}
                         </div>
                         <div className="text-xs opacity-90 mb-1">
-                          📍 {event.extendedProps.local}
+                          📍 {event.extendedProps.location}
                         </div>
                         <div className="text-xs opacity-90 mb-1">
-                          👤 {event.extendedProps.cita.cliente_nombre}
+                          👤 {event.extendedProps.appointment.client_name}
                         </div>
                         <div className="text-xs opacity-75">
-                          ⏰ {new Date(event.start).toLocaleTimeString('es-ES', { 
+                          ⏰ {new Date(event.start).toLocaleTimeString(browserLocale, { 
                             hour: '2-digit', 
                             minute: '2-digit' 
-                          })} - {new Date(event.end).toLocaleTimeString('es-ES', { 
+                          })} - {new Date(event.end).toLocaleTimeString(browserLocale, { 
                             hour: '2-digit', 
                             minute: '2-digit' 
                           })}
                         </div>
-                        {event.extendedProps.participantes > 1 && (
+                        {event.extendedProps.participants > 1 && (
                           <div className="text-xs opacity-75">
-                            👥 {event.extendedProps.participantes} participantes
+                            👥 {event.extendedProps.participants} {locale === 'en' ? 'participants' : 'participantes'}
                           </div>
                         )}
                       </div>

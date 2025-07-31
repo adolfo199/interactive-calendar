@@ -1,0 +1,25 @@
+{
+  "status": {
+    "confirmed": "Confirmada",
+    "pending": "Pendiente",
+    "cancelled": "Cancelada", 
+    "completed": "Completada",
+    "in_progress": "En Progreso"
+  },
+  "statusPlural": {
+    "confirmed": "{{count}} confirmadas",
+    "pending": "{{count}} pendientes",
+    "cancelled": "{{count}} canceladas",
+    "completed": "{{count}} completadas", 
+    "in_progress": "{{count}} en progreso"
+  },
+  "types": {
+    "consultation": "Consulta",
+    "meeting": "Reunión",
+    "training": "Entrenamiento",
+    "demo": "Demo",
+    "event": "Evento", 
+    "reservation": "Reserva",
+    "maintenance": "Mantenimiento"
+  }
+}

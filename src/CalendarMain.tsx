@@ -23,7 +23,7 @@ import {
   CheckCircle2,
   Pause,
   Grid3x3,
-  BarChart3,
+  BarChart3, 
   FileText
 } from 'lucide-react'
 
@@ -32,19 +32,25 @@ import { CalendarDay } from './CalendarDay'
 import { CalendarLegend } from './CalendarLegend'
 import { useCalendar } from './hooks/useCalendar'
 import { useCalendarEvents } from './hooks/useCalendarEvents'
-import { useCitaModal } from './hooks/useCitaModal'
-import type { CalendarProps, CitaCalendarEvent, VistaCalendario } from './types/cita.types'
+import { useAppointmentModal } from './hooks/useAppointmentModal'
+import { useCalendarTranslations } from './hooks/useCalendarTranslations'
+import type { 
+  CalendarProps, 
+  CalendarEvent, 
+  CalendarView,
+} from './types/appointment.types'
 
 interface CalendarMainProps extends Omit<CalendarProps, 'events' | 'view' | 'currentDate'> {
-  initialView?: VistaCalendario
+  initialView?: CalendarView
   initialDate?: Date
   height?: string | number
   showToolbar?: boolean
   showCreateButton?: boolean
   showViewSelector?: boolean
-  onCitaCreate?: (data: CitaCalendarEvent) => Promise<void>
-  onCitaUpdate?: (data: CitaCalendarEvent) => Promise<void>
-  onCitaDelete?: (id: number) => Promise<void>
+  locale?: 'en' | 'es'
+  onAppointmentCreate?: (data: CalendarEvent) => Promise<void>
+  onAppointmentUpdate?: (data: CalendarEvent) => Promise<void>
+  onAppointmentDelete?: (id: number) => Promise<void>
 }
 
 export function CalendarMain({
@@ -54,38 +60,43 @@ export function CalendarMain({
   showToolbar = true,
   showCreateButton = true,
   showViewSelector = true,
+  locale = 'en',
   onDateClick,
   onEventClick,
   onCreateEvent,
-  onCitaCreate,
-  onCitaDelete,
+  onAppointmentCreate,
+  onAppointmentDelete,
   loading = false,
   className,
 }: CalendarMainProps) {
   
+  // Translation hook
+  const t = useCalendarTranslations({ locale })
+  
   // Hooks del calendario
   const calendar = useCalendar({
     initialView,
-    initialDate
+    initialDate,
+    locale
   })
   
   const events = useCalendarEvents({
     // initialEvents se cargarían desde la API
   })
   
-  const modal = useCitaModal({
-    onSubmit: onCitaCreate as (data: unknown) => Promise<void>, // Tipo temporal hasta definir bien la interface
-    onDelete: onCitaDelete
+  const modal = useAppointmentModal({
+    onSubmit: onAppointmentCreate as (data: unknown) => Promise<void>, // Tipo temporal hasta definir bien la interface
+    onDelete: onAppointmentDelete
   })
 
   // Función para obtener el icono del tipo de cita
-  const getEventIcon = (tipo: string) => {
-    switch (tipo.toLowerCase()) {
-      case 'consulta':
+  const getEventIcon = (type: string) => {
+    switch (type.toLowerCase()) {
+      case 'consultation':
         return <CalendarIcon className="h-3 w-3" />
-      case 'reunion':
+      case 'meeting':
         return <Users className="h-3 w-3" />
-      case 'entrenamiento':
+      case 'training':
         return <GraduationCap className="h-3 w-3" />
       case 'demo':
         return <PresentationIcon className="h-3 w-3" />
@@ -95,15 +106,15 @@ export function CalendarMain({
   }
 
   // Función para obtener el icono del estado
-  const getStatusIcon = (estado: string) => {
-    switch (estado.toLowerCase()) {
-      case 'confirmada':
+  const getStatusIcon = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
         return <CheckCircle2 className="h-3 w-3 text-green-600" />
-      case 'pendiente':
+      case 'pending':
         return <Clock className="h-3 w-3 text-yellow-600" />
-      case 'cancelada':
+      case 'cancelled':
         return <AlertCircle className="h-3 w-3 text-red-600" />
-      case 'en proceso':
+      case 'in_progress':
         return <Pause className="h-3 w-3 text-blue-600" />
       default:
         return <Clock className="h-3 w-3 text-gray-600" />
@@ -111,38 +122,37 @@ export function CalendarMain({
   }
 
   // Función para obtener colores basados en el ESTADO de la cita (más intuitivo)
-  const getEventColors = (estado: string) => {
-    switch (estado.toLowerCase()) {
-      case 'confirmada':
+  const getEventColors = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'confirmed':
         return {
           bg: 'linear-gradient(135deg, #10b981, #059669)', // Verde
           text: '#ffffff',
           border: '#059669',
           solid: '#10b981'
         }
-      case 'pendiente':
+      case 'pending':
         return {
           bg: 'linear-gradient(135deg, #f59e0b, #d97706)', // Amarillo/Naranja
           text: '#ffffff',
           border: '#d97706',
           solid: '#f59e0b'
         }
-      case 'cancelada':
+      case 'cancelled':
         return {
           bg: 'linear-gradient(135deg, #ef4444, #dc2626)', // Rojo
           text: '#ffffff',
           border: '#dc2626',
           solid: '#ef4444'
         }
-      case 'completada':
+      case 'completed':
         return {
           bg: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', // Azul
           text: '#ffffff',
           border: '#1d4ed8',
           solid: '#3b82f6'
         }
-      case 'en_progreso':
-      case 'en proceso':
+      case 'in_progress':
         return {
           bg: 'linear-gradient(135deg, #8b5cf6, #7c3aed)', // Púrpura
           text: '#ffffff',
@@ -183,12 +193,12 @@ export function CalendarMain({
   }
 
   // Manejar click en evento
-  const handleEventClick = (event: CitaCalendarEvent) => {
+  const handleEventClick = (event: CalendarEvent) => {
     onEventClick?.(event)
     
     // Si no hay evento customizado, abrir modal de vista
     if (!onEventClick) {
-      modal.openViewModal(event.extendedProps.cita)
+      modal.openViewModal(event.extendedProps.appointment)
     }
   }
 
@@ -203,7 +213,7 @@ export function CalendarMain({
   }
 
   // Cambiar vista
-  const handleViewChange = (newView: VistaCalendario) => {
+  const handleViewChange = (newView: CalendarView) => {
     calendar.setView(newView)
   }
 
@@ -228,7 +238,8 @@ export function CalendarMain({
       selectedDate: calendar.selectedDate,
       onDateClick: handleDateClick,
       onEventClick: handleEventClick,
-      loading: loading || events.loading
+      loading: loading || events.loading,
+      locale
     }
 
     switch (calendar.view) {
@@ -310,10 +321,10 @@ export function CalendarMain({
                 {/* Eventos del día con diseño mejorado */}
                 <div className="space-y-1.5">
                   {dayEvents.slice(0, 2).map((event) => {
-                    const colors = getEventColors(event.extendedProps.cita.estado)
-                    const tipoIcon = getEventIcon(event.extendedProps.tipo)
-                    const statusIcon = getStatusIcon(event.extendedProps.cita.estado)
-                    
+                    const colors = getEventColors(event.extendedProps.appointment.status)
+                    const tipoIcon = getEventIcon(event.extendedProps.type)
+                    const statusIcon = getStatusIcon(event.extendedProps.appointment.status)
+
                     return (
                       <div
                         key={event.id}
@@ -330,7 +341,7 @@ export function CalendarMain({
                             color: colors.text,
                             borderColor: colors.border
                           }}
-                          title={`${event.title} - ${event.extendedProps.local}\n${event.extendedProps.cita.estado} | ${event.extendedProps.tipo}`}
+                          title={`${event.title} - ${event.extendedProps.location}\n${t.t(`appointments:status.${event.extendedProps.appointment.status}`)} | ${t.t(`appointments:types.${event.extendedProps.type}`)}`}
                         >
                           <div className="flex items-center space-x-1 mb-1">
                             {tipoIcon}
@@ -342,7 +353,7 @@ export function CalendarMain({
                           <div className="flex items-center space-x-1 text-xs opacity-90">
                             <MapPin className="h-2.5 w-2.5" />
                             <span className="truncate">
-                              {event.extendedProps.local}
+                              {event.extendedProps.location}
                             </span>
                           </div>
                         </div>
@@ -357,11 +368,11 @@ export function CalendarMain({
                             </div>
                             <div className="flex items-center space-x-1">
                               <MapPin className="h-3 w-3" />
-                              <span>{event.extendedProps.local}</span>
+                              <span>{event.extendedProps.location}</span>
                             </div>
                             <div className="flex items-center space-x-1">
-                              {getStatusIcon(event.extendedProps.cita.estado)}
-                              <span className="capitalize">{event.extendedProps.cita.estado}</span>
+                              {getStatusIcon(event.extendedProps.appointment.status)}
+                              <span className="capitalize">{t.t(`appointments:status.${event.extendedProps.appointment.status}`)}</span>
                             </div>
                           </div>
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
@@ -380,7 +391,7 @@ export function CalendarMain({
                         handleDateClick(date) // Abrir vista de día
                       }}
                     >
-                      +{dayEvents.length - 2} más eventos
+                      {t.t('stats.moreEvents', { count: dayEvents.length - 2 })}
                     </div>
                   )}
                 </div>
@@ -428,7 +439,7 @@ export function CalendarMain({
                   disabled={loading}
                   className="font-medium hover:bg-primary hover:text-primary-foreground transition-all duration-200 border-primary/20"
                 >
-                  Hoy
+                  {t.t('navigation.today')}
                 </Button>
                 
                 <Button 
@@ -447,7 +458,7 @@ export function CalendarMain({
               {/* Selector de vista mejorado */}
               {showViewSelector && (
                 <div className="flex space-x-1 bg-white rounded-lg p-1 shadow-sm border">
-                  {(['month', 'week', 'day'] as VistaCalendario[]).map((viewType) => (
+                  {(['month', 'week', 'day'] as CalendarView[]).map((viewType) => (
                     <Button
                       key={viewType}
                       variant={calendar.view === viewType ? 'default' : 'ghost'}
@@ -464,17 +475,17 @@ export function CalendarMain({
                       {viewType === 'month' ? (
                         <>
                           <Grid3x3 className="h-4 w-4 mr-1" />
-                          Mes
+                          {t.t('views.month')}
                         </>
                       ) : viewType === 'week' ? (
                         <>
                           <BarChart3 className="h-4 w-4 mr-1" />
-                          Semana
+                          {t.t('views.week')}
                         </>
                       ) : (
                         <>
                           <FileText className="h-4 w-4 mr-1" />
-                          Día
+                          {t.t('views.day')}
                         </>
                       )}
                     </Button>
@@ -495,7 +506,7 @@ export function CalendarMain({
                   ) : (
                     <Plus className="h-4 w-4 mr-2" />
                   )}
-                  Nueva Cita
+                  {t.t('buttons.create')}
                 </Button>
               )}
             </div>
@@ -507,61 +518,61 @@ export function CalendarMain({
             <div className="flex items-center space-x-2">
               <CalendarIcon className="h-4 w-4 text-blue-600" />
               <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-200 transition-colors">
-                {events.eventStats.total} citas totales
+                {t.t('stats.totalAppointments', { count: events.eventStats.total })}
               </Badge>
             </div>
             
             {/* Leyenda de colores por estado */}
             <div className="flex items-center space-x-4">
-              <span className="text-sm font-medium text-gray-600">Estados:</span>
+              <span className="text-sm font-medium text-gray-600">{t.t('stats.status')}</span>
               
               <div className="flex items-center space-x-3">
                 {/* Verde - Confirmadas */}
-                {events.eventStats.porEstado.confirmada > 0 && (
+                {events.eventStats.byStatus.confirmed > 0 && (
                   <div className="flex items-center space-x-1.5">
                     <div className="w-3 h-3 rounded-full bg-green-500"></div>
                     <Badge variant="outline" className="border-green-500 text-green-700 bg-green-50 hover:bg-green-100 transition-colors text-xs">
-                      {events.eventStats.porEstado.confirmada} confirmadas
+                      {t.t('appointments:statusPlural.confirmed', { count: events.eventStats.byStatus.confirmed })}
                     </Badge>
                   </div>
                 )}
                 
                 {/* Amarillo - Pendientes */}
-                {events.eventStats.porEstado.pendiente > 0 && (
+                {events.eventStats.byStatus.pending > 0 && (
                   <div className="flex items-center space-x-1.5">
                     <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                     <Badge variant="outline" className="border-yellow-500 text-yellow-700 bg-yellow-50 hover:bg-yellow-100 transition-colors text-xs">
-                      {events.eventStats.porEstado.pendiente} pendientes
+                      {t.t('appointments:statusPlural.pending', { count: events.eventStats.byStatus.pending })}
                     </Badge>
                   </div>
                 )}
                 
                 {/* Azul - Completadas */}
-                {events.eventStats.porEstado.completada > 0 && (
+                {events.eventStats.byStatus.completed > 0 && (
                   <div className="flex items-center space-x-1.5">
                     <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                     <Badge variant="outline" className="border-blue-500 text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors text-xs">
-                      {events.eventStats.porEstado.completada} completadas
+                      {t.t('appointments:statusPlural.completed', { count: events.eventStats.byStatus.completed })}
                     </Badge>
                   </div>
                 )}
                 
                 {/* Rojo - Canceladas */}
-                {events.eventStats.porEstado.cancelada > 0 && (
+                {events.eventStats.byStatus.cancelled > 0 && (
                   <div className="flex items-center space-x-1.5">
                     <div className="w-3 h-3 rounded-full bg-red-500"></div>
                     <Badge variant="outline" className="border-red-500 text-red-700 bg-red-50 hover:bg-red-100 transition-colors text-xs">
-                      {events.eventStats.porEstado.cancelada} canceladas
+                      {t.t('appointments:statusPlural.cancelled', { count: events.eventStats.byStatus.cancelled })}
                     </Badge>
                   </div>
                 )}
                 
                 {/* Púrpura - En progreso */}
-                {events.eventStats.porEstado.en_progreso > 0 && (
+                {events.eventStats.byStatus.in_progress > 0 && (
                   <div className="flex items-center space-x-1.5">
                     <div className="w-3 h-3 rounded-full bg-purple-500"></div>
                     <Badge variant="outline" className="border-purple-500 text-purple-700 bg-purple-50 hover:bg-purple-100 transition-colors text-xs">
-                      {events.eventStats.porEstado.en_progreso} en progreso
+                      {t.t('appointments:statusPlural.in_progress', { count: events.eventStats.byStatus.in_progress })}
                     </Badge>
                   </div>
                 )}
@@ -586,10 +597,10 @@ export function CalendarMain({
                 <div className="absolute inset-0 h-12 w-12 border-4 border-blue-200 rounded-full mx-auto animate-pulse"></div>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Cargando calendario...
+                {t.t('loading.calendar')}
               </h3>
               <p className="text-sm text-muted-foreground">
-                Obteniendo eventos y configuración
+                {t.t('loading.events')}
               </p>
             </div>
           </div>
@@ -600,7 +611,7 @@ export function CalendarMain({
                 <AlertCircle className="h-8 w-8 text-red-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Error al cargar eventos
+                {t.t('errors.loadEvents')}
               </h3>
               <p className="text-sm text-muted-foreground mb-6">
                 {events.error}
@@ -612,7 +623,7 @@ export function CalendarMain({
                 onClick={() => events.loadEvents()}
               >
                 <ChevronRight className="h-4 w-4 mr-2" />
-                Reintentar
+                {t.t('buttons.retry')}
               </Button>
             </div>
           </div>

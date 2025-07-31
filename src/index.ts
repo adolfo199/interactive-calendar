@@ -1,5 +1,9 @@
 // Exportar componentes principales
-export { CalendarMain } from './CalendarMain';
+// Initialize i18n before exporting components
+import './i18n';
+
+// Main calendar component export
+export { CalendarMain } from './CalendarMain'
 export { CalendarDay } from './CalendarDay';
 export { CalendarWeek } from './CalendarWeek';
 export { CalendarLegend } from './CalendarLegend';
@@ -7,13 +11,13 @@ export { CalendarLegend } from './CalendarLegend';
 // Exportar hooks
 export { useCalendar } from './hooks/useCalendar';
 export { useCalendarEvents } from './hooks/useCalendarEvents';
-export { useCitaModal } from './hooks/useCitaModal';
+export { useAppointmentModal } from './hooks/useAppointmentModal';
 
-// Exportar tipos
-export type * from './types/cita.types';
+// Export types from appointment types
+export type * from './types/appointment.types';
 
-// Exportar datos de prueba (opcional)
-export { citasEjemplo, eventosEjemplo, getEventosEjemplo, simulateDataLoad } from './mockData';
+// Export mock data
+export { exampleAppointments, exampleEvents, getExampleEvents, simulateDataLoad } from './mockData';
 
 // Exportar plugin de Tailwind
 export { default as tailwindPlugin } from './plugin.js';

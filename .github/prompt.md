@@ -24,7 +24,7 @@ This is a React TypeScript library for appointment/cita management calendar.
 ### Custom Hooks
 - `useCalendar`: Navigation, view management, date selection
 - `useCalendarEvents`: Event CRUD operations, filtering, statistics
-- `useCitaModal`: Modal state management for create/edit/view
+- `useAppointmentModal`: Modal state management for create/edit/view
 
 ### Type System
 - `Cita`: Complete appointment entity with relations
@@ -94,7 +94,7 @@ interface CalendarMainProps {
 ### State Management
 - Calendar state is managed internally via custom hooks
 - Events/appointments are managed separately from UI state
-- Modal state is isolated in `useCitaModal`
+- Modal state is isolated in `useAppointmentModal`
 - External state can be synchronized via props callbacks
 
 ### Event Handling

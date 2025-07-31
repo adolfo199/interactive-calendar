@@ -1,0 +1,54 @@
+{
+  "title": "Interactive Calendar",
+  "navigation": {
+    "previous": "Previous",
+    "next": "Next",
+    "today": "Today"
+  },
+  "views": {
+    "month": "Month",
+    "week": "Week", 
+    "day": "Day"
+  },
+  "weekDays": {
+    "short": {
+      "monday": "Mon",
+      "tuesday": "Tue", 
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
+    },
+    "long": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday", 
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    }
+  },
+  "buttons": {
+    "create": "New Appointment",
+    "retry": "Retry",
+    "close": "Close"
+  },
+  "loading": {
+    "calendar": "Loading calendar...",
+    "events": "Getting events and configuration",
+    "dailyView": "Loading daily view...",
+    "weeklyView": "Loading weekly view...",
+    "schedules": "Preparing schedules and events"
+  },
+  "errors": {
+    "loadEvents": "Error loading events",
+    "unknown": "An unexpected error occurred"
+  },
+  "stats": {
+    "totalAppointments": "{{count}} total appointments",
+    "status": "Status:",
+    "moreEvents": "+{{count}} more events"
+  }
+}
