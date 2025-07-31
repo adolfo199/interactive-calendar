@@ -214,11 +214,62 @@ export function citaToCalendarEvent(cita: Cita): CitaCalendarEvent {
 - Validate server responses
 - Implement proper error handling for network issues
 
+## Git Workflow Guidelines
+
+### GitFlow Structure
+- **master/main**: Código de producción estable
+- **develop**: Rama de desarrollo activo
+- **feature/***: Nuevas características
+- **release/***: Preparación de versiones
+- **hotfix/***: Correcciones urgentes
+
+### Desarrollo de Features
+```bash
+# 1. Crear nueva feature
+./scripts/git-workflow.sh feature nombre-de-la-feature
+
+# 2. Desarrollar con commits frecuentes
+./scripts/git-workflow.sh commit "feat: descripción del cambio"
+
+# 3. Finalizar feature
+./scripts/git-workflow.sh finish-feature nombre-de-la-feature
+```
+
+### Convenciones de Commits
+Usar **Conventional Commits** para mantener un historial limpio:
+- `feat:` Nueva funcionalidad
+- `fix:` Corrección de bug
+- `docs:` Cambios en documentación
+- `style:` Cambios de formato (no afectan lógica)
+- `refactor:` Refactorización de código
+- `test:` Agregar o modificar tests
+- `chore:` Tareas de mantenimiento
+- `perf:` Mejoras de rendimiento
+
+### Flujo de Trabajo Diario
+1. **Iniciar feature**: `./scripts/git-workflow.sh feature mi-nueva-feature`
+2. **Desarrollar**: Hacer cambios pequeños e incrementales
+3. **Commit frecuente**: `./scripts/git-workflow.sh commit "feat: add calendar navigation"`
+4. **Probar**: Verificar en el proyecto de pruebas
+5. **Finalizar**: `./scripts/git-workflow.sh finish-feature mi-nueva-feature`
+
+### Reglas de Commit
+- **Commits pequeños**: Una funcionalidad o fix por commit
+- **Mensajes descriptivos**: Explicar QUÉ y POR QUÉ
+- **Build antes de commit**: El script automáticamente compila
+- **Tests incluidos**: Agregar tests para nuevas features
+
+### Versionado
+- **Patch** (1.0.1): Bug fixes
+- **Minor** (1.1.0): Nuevas features compatibles
+- **Major** (2.0.0): Breaking changes
+
 ## Final Notes
 
 - **Priority**: Functionality > Performance > Code elegance
 - **User Experience**: Always consider the end-user experience
 - **Maintainability**: Write code that future developers can understand
 - **Library Mindset**: This component will be used by multiple applications
+- **Git Discipline**: Commits frecuentes y mensajes claros
 
 When in doubt, favor explicit code over clever code. The calendar component should be reliable, performant, and easy to integrate.
