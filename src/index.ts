@@ -4,7 +4,7 @@ import './i18n';
 
 // Main calendar component export
 export { CalendarMain } from './CalendarMain'
-export { CalendarDay } from './CalendarDay';
+export { CalendarDay } from './calendar-views/day';
 export { CalendarWeek } from './CalendarWeek';
 export { CalendarLegend } from './CalendarLegend';
 

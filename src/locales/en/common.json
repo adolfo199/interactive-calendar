@@ -50,5 +50,11 @@
     "totalAppointments": "{{count}} total appointments",
     "status": "Status:",
     "moreEvents": "+{{count}} more events"
+  },
+  "dayView": {
+    "eventsCount_one": "{{count}} scheduled appointment",
+    "eventsCount_other": "{{count}} scheduled appointments",
+    "participants_one": "{{count}} participant",
+    "participants_other": "{{count}} participants"
   }
 }

@@ -50,5 +50,11 @@
     "totalAppointments": "{{count}} citas totales",
     "status": "Estados:",
     "moreEvents": "+{{count}} más eventos"
+  },
+  "dayView": {
+    "eventsCount_one": "{{count}} evento programado",
+    "eventsCount_other": "{{count}} eventos programados",
+    "participants_one": "{{count}} participante",
+    "participants_other": "{{count}} participantes"
   }
 }

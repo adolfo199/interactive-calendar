@@ -19,8 +19,8 @@ import {
 } from './calendar-views/shared'
 
 // Import view components
-import { CalendarDay } from './CalendarDay'
-import { CalendarWeek } from './CalendarWeek' 
+import { CalendarDay } from './calendar-views/day'
+import { CalendarWeek } from './calendar-views/week' 
 import { CalendarMonth } from './calendar-views/month'
 
 // Import hooks and types

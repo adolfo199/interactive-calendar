@@ -60,7 +60,18 @@ export function CalendarWeek({
   const { t } = useCalendarTranslations({ locale: locale as 'en' | 'es' })
   const timeSlots = generateTimeSlots()
   const weekDays = getWeekDates(currentDate)
-  const weekDayNames = getWeekDays?.() || ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+  
+  // Generate localized week day names using translations
+  const weekDayNames = getWeekDays?.() || [
+    t('common:weekDays.short.monday'),
+    t('common:weekDays.short.tuesday'),
+    t('common:weekDays.short.wednesday'),
+    t('common:weekDays.short.thursday'),
+    t('common:weekDays.short.friday'),
+    t('common:weekDays.short.saturday'),
+    t('common:weekDays.short.sunday')
+  ]
+  
   const today = new Date()
 
   // Convert locale to browser locale format
