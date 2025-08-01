@@ -191,7 +191,7 @@ export function CalendarMain({
                   <CalendarIcon className="h-5 w-5 text-primary" />
                 </div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-                  {t.t('common.calendar')}
+                  {t.t('common:title')}
                 </h1>
               </div>
               
