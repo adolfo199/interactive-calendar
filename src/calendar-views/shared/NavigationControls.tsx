@@ -1,9 +1,10 @@
 /**
  * Reusable component for calendar navigation controls
  * Includes previous, next and today buttons
+ * Optimized with React.memo for performance
  */
 
-import React from 'react'
+import React, { memo, useMemo } from 'react'
 import { cn } from '../../utils'
 import { Button } from '../../components/ui/button'
 import { 
@@ -31,7 +32,7 @@ interface NavigationControlsProps {
   todayText?: string
 }
 
-export function NavigationControls({
+const NavigationControls = memo<NavigationControlsProps>(({
   onPrevious,
   onNext,
   onToday,
@@ -40,9 +41,21 @@ export function NavigationControls({
   variant = 'full',
   className,
   todayText = 'Hoy'
-}: NavigationControlsProps) {
+}) => {
 
-  if (variant === 'compact') {
+  // Memoize icon components to prevent recreation
+  const leftIcon = useMemo(() => 
+    loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChevronLeft className="h-4 w-4" />
+  , [loading])
+
+  const rightIcon = useMemo(() => 
+    loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChevronRight className="h-4 w-4" />
+  , [loading])
+
+  // Memoize compact variant to prevent recreation
+  const compactVariant = useMemo(() => {
+    if (variant !== 'compact') return null
+    
     return (
       <div className={cn('flex items-center space-x-2', className)}>
         <Button 
@@ -70,7 +83,10 @@ export function NavigationControls({
         </Button>
       </div>
     )
-  }
+  }, [variant, className, onPrevious, loading, title, onNext])
+
+  // Return compact variant if applicable
+  if (compactVariant) return compactVariant
 
   return (
     <div className={cn('flex items-center space-x-4', className)}>
@@ -88,11 +104,7 @@ export function NavigationControls({
           disabled={loading}
           className="hover:bg-primary/10 hover:text-primary transition-all duration-200"
         >
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <ChevronLeft className="h-4 w-4" />
-          )}
+          {leftIcon}
         </Button>
         
         <Button 
@@ -112,13 +124,13 @@ export function NavigationControls({
           disabled={loading}
           className="hover:bg-primary/10 hover:text-primary transition-all duration-200"
         >
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
+          {rightIcon}
         </Button>
       </div>
     </div>
   )
-}
+})
+
+NavigationControls.displayName = 'NavigationControls'
+
+export { NavigationControls }

@@ -1,9 +1,10 @@
 /**
  * Week Grid Component
  * Main grid layout for the weekly calendar view
+ * Optimized with React.memo and useCallback for performance
  */
 
-import React from 'react'
+import React, { memo, useMemo, useCallback } from 'react'
 import { cn } from '../../../utils'
 import { WeekTimeAxis } from './WeekTimeAxis'
 import { WeekDayColumn } from './WeekDayColumn'
@@ -28,7 +29,7 @@ interface WeekGridProps {
   className?: string
 }
 
-export function WeekGrid({
+const WeekGrid = memo<WeekGridProps>(({
   weekDays,
   timeSlots,
   events,
@@ -37,51 +38,84 @@ export function WeekGrid({
   onSlotClick,
   onEventClick,
   className
-}: WeekGridProps) {
+}) => {
 
-  // Filter events for each day
-  const getEventsForDay = (date: Date) => {
-    return events.filter(event => {
-      const eventDate = new Date(event.start)
-      return eventDate.toDateString() === date.toDateString()
+  // Memoize today's date string to prevent recreation
+  const todayString = useMemo(() => today.toDateString(), [today])
+  const selectedDateString = useMemo(() => selectedDate?.toDateString(), [selectedDate])
+
+  // Memoize events grouped by day to prevent recalculation
+  const eventsByDay = useMemo(() => {
+    const grouped = new Map<string, CalendarEvent[]>()
+    
+    weekDays.forEach(date => {
+      const dateString = date.toDateString()
+      grouped.set(dateString, [])
     })
-  }
+    
+    events.forEach(event => {
+      const eventDate = new Date(event.start)
+      const eventDateString = eventDate.toDateString()
+      const dayEvents = grouped.get(eventDateString)
+      if (dayEvents) {
+        dayEvents.push(event)
+      }
+    })
+    
+    return grouped
+  }, [weekDays, events])
 
-  const handleSlotClick = (date: Date, timeSlot: string) => {
+  // Memoize click handlers
+  const handleSlotClick = useCallback((date: Date, timeSlot: string) => {
     onSlotClick?.(date, timeSlot)
-  }
+  }, [onSlotClick])
 
-  const handleEventClick = (event: CalendarEvent) => {
+  const handleEventClick = useCallback((event: CalendarEvent) => {
     onEventClick?.(event)
-  }
+  }, [onEventClick])
+
+  // Memoize container classes
+  const containerClassName = useMemo(() => 
+    cn('grid grid-cols-8 h-full overflow-auto', className)
+  , [className])
+
+  // Memoize day columns to prevent unnecessary re-renders
+  const dayColumns = useMemo(() => {
+    return weekDays.map((day) => {
+      const dateString = day.toDateString()
+      const dayEvents = eventsByDay.get(dateString) || []
+      const isToday = dateString === todayString
+      const isSelected = selectedDateString && dateString === selectedDateString
+      
+      return (
+        <div key={day.toISOString()} className="relative">
+          <WeekDayColumn
+            date={day}
+            timeSlots={timeSlots}
+            events={dayEvents}
+            isSelected={isSelected || false}
+            isToday={isToday}
+            onSlotClick={handleSlotClick}
+            onEventClick={handleEventClick}
+          />
+        </div>
+      )
+    })
+  }, [weekDays, eventsByDay, timeSlots, todayString, selectedDateString, handleSlotClick, handleEventClick])
 
   return (
-    <div className={cn('grid grid-cols-8 h-full overflow-auto', className)}>
+    <div className={containerClassName}>
       {/* Time axis column */}
       <div className="sticky left-0 z-20 bg-white">
         <WeekTimeAxis timeSlots={timeSlots} />
       </div>
       
       {/* Day columns */}
-      {weekDays.map((day) => {
-        const dayEvents = getEventsForDay(day)
-        const isToday = day.toDateString() === today.toDateString()
-        const isSelected = selectedDate && day.toDateString() === selectedDate.toDateString()
-        
-        return (
-          <div key={day.toISOString()} className="relative">
-            <WeekDayColumn
-              date={day}
-              timeSlots={timeSlots}
-              events={dayEvents}
-              isSelected={isSelected || false}
-              isToday={isToday}
-              onSlotClick={handleSlotClick}
-              onEventClick={handleEventClick}
-            />
-          </div>
-        )
-      })}
+      {dayColumns}
     </div>
   )
-}
+})
+
+WeekGrid.displayName = 'WeekGrid'
+
+export { WeekGrid }

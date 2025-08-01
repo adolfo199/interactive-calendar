@@ -31,7 +31,7 @@ interface CalendarMonthProps {
 
 export function CalendarMonth({
   currentDate,
-  selectedDate,
+  selectedDate: _selectedDate, // eslint-disable-line no-unused-vars
   events,
   locale = 'en',
   loading = false,
@@ -83,10 +83,7 @@ export function CalendarMonth({
         loading && "opacity-50 pointer-events-none"
       )}>
         <MonthGrid
-          currentDate={currentDate}
-          selectedDate={selectedDate}
           calendarDays={calendar.calendarDays}
-          events={events}
           locale={locale}
           onDateClick={handleDateClick}
           onEventClick={handleEventClick}
