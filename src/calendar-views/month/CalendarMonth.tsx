@@ -1,9 +1,10 @@
 /**
  * Calendar Month View Component
  * Renders the monthly calendar view with days and events
+ * Optimized with React.memo, useCallback and useMemo for performance
  */
 
-import React from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
 import { cn } from '../../utils'
 import { MonthHeader, MonthGrid } from './components'
 import { useCalendar } from '../../hooks/useCalendar'
@@ -29,7 +30,7 @@ interface CalendarMonthProps {
   className?: string
 }
 
-export function CalendarMonth({
+export const CalendarMonth = memo<CalendarMonthProps>(({
   currentDate,
   selectedDate: _selectedDate, // eslint-disable-line no-unused-vars
   events,
@@ -38,7 +39,7 @@ export function CalendarMonth({
   onDateClick,
   onEventClick,
   className
-}: CalendarMonthProps) {
+}) => {
 
   // Hooks for calendar logic
   const calendar = useCalendar({
@@ -49,39 +50,48 @@ export function CalendarMonth({
 
   const t = useCalendarTranslations({ locale })
 
-  // Event handlers
-  const handleDateClick = (date: Date) => {
+  // Memoized event handlers to prevent unnecessary re-renders
+  const handleDateClick = useCallback((date: Date) => {
     console.log('CalendarMonth - handleDateClick:', date)
     onDateClick?.(date)
-  }
+  }, [onDateClick])
 
-  const handleEventClick = (event: CalendarEvent) => {
+  const handleEventClick = useCallback((event: CalendarEvent) => {
     console.log('CalendarMonth - handleEventClick:', event)
     onEventClick?.(event)
-  }
+  }, [onEventClick])
 
-  // Get events for a specific day
-  const getEventsForDay = (date: Date) => {
+  // Memoized function to get events for a specific day
+  const getEventsForDay = useCallback((date: Date) => {
     return events.filter(event => {
       if (!event.start) return false
       const eventDate = new Date(event.start)
       return eventDate.toDateString() === date.toDateString()
     })
-  }
+  }, [events])
+
+  // Memoized weekdays to prevent recreation
+  const weekDays = useMemo(() => calendar.getWeekDays(), [calendar])
+
+  // Memoized container className
+  const containerClassName = useMemo(() => cn('p-4', className), [className])
+
+  // Memoized grid className for loading state
+  const gridClassName = useMemo(() => cn(
+    "transition-opacity duration-200",
+    loading && "opacity-50 pointer-events-none"
+  ), [loading])
 
   return (
-    <div className={cn('p-4', className)}>
+    <div className={containerClassName}>
       {/* Month header with weekdays */}
       <MonthHeader 
-        weekDays={calendar.getWeekDays()}
+        weekDays={weekDays}
         locale={locale}
       />
 
       {/* Month grid with loading state */}
-      <div className={cn(
-        "transition-opacity duration-200",
-        loading && "opacity-50 pointer-events-none"
-      )}>
+      <div className={gridClassName}>
         <MonthGrid
           calendarDays={calendar.calendarDays}
           locale={locale}
@@ -109,4 +119,6 @@ export function CalendarMonth({
       )}
     </div>
   )
-}
+})
+
+CalendarMonth.displayName = 'CalendarMonth'

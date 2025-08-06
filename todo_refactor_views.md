@@ -3,9 +3,37 @@
 ## Estado Actual del Proyecto
 **Rama:** `views-refactor` ✅  
 **Última actualización:** 5 de agosto de 2025  
-**Progreso general:** 🟢 Fases 1, 2, 3, 4 y 5 Completadas | ⏳ Fase 6 en Progreso (30%)
+**Progreso general:** 🟢 Fases 1, 2, 3, 4 y 5 Completadas | ⏳ Fase 6 en Progreso (70%)
 
 ## 📝 Changelog Reciente
+
+### 5 de agosto de 2025 - Optimización React Performance
+- ✅ **Implementación completa de React.memo en componentes principales**
+  - 🎯 **CalendarMain** optimizado con React.memo, useCallback, useMemo
+    - Event handlers memoizados para prevenir re-renders innecesarios
+    - Common props memoizados para componentes de vista
+    - View selector labels memoizados
+    - Container styles memoizados para mejor performance
+  - 🎯 **CalendarMonth** optimizado con React.memo, useCallback, useMemo
+    - Event handlers memoizados (handleDateClick, handleEventClick)
+    - getEventsForDay función memoizada
+    - Week days y class names memoizados
+  - 🎯 **CalendarWeek** optimizado con React.memo, useCallback, useMemo
+    - Time slots memoizados (prevención de recálculo)
+    - Week days y week day names memoizados
+    - Today's date y browser locale memoizados
+    - Event handlers memoizados
+  - 🎯 **CalendarDay** optimizado con React.memo, useCallback, useMemo
+    - Day events filtrados memoizados para evitar recálculo
+    - Event handlers memoizados
+  - ✅ **Estado actual de optimización:**
+    - AppointmentCard ✅ (ya optimizado previamente)
+    - ViewSelector ✅ (ya optimizado previamente)
+    - WeekGrid ✅ (ya optimizado previamente)
+    - CalendarMain ✅ (recién optimizado)
+    - CalendarMonth ✅ (recién optimizado)
+    - CalendarWeek ✅ (recién optimizado)
+    - CalendarDay ✅ (recién optimizado)
 
 ### 5 de agosto de 2025 - Optimización CSS
 - ✅ **Eliminación masiva de clases space-x/space-y problemáticas**
@@ -77,17 +105,19 @@
   - Arquitectura modular y separación de responsabilidades
 
 ### ⏳ En Progreso:
-- **Fase 6:** Testing y optimización (30%)
+- **Fase 6:** Testing y optimización (70%)
   - ✅ Eliminación de clases space-x/space-y problemáticas completada
   - ✅ Reemplazadas por alternativas confiables (gap, margin directo)
   - ✅ CSS optimizado de 38KB → 37KB (-1KB, -8 clases)
+  - ✅ Optimización de performance con React.memo, useCallback, useMemo:
+    - CalendarMain, CalendarMonth, CalendarWeek, CalendarDay optimizados
+    - AppointmentCard, ViewSelector, WeekGrid ya estaban optimizados
   - ⏳ Tests unitarios para cada componente
   - ⏳ Tests de integración para orquestadores
-  - ⏳ Optimización de performance (React.memo, useCallback)
   - ⏳ Documentación JSDoc
 
 ### 📋 Pendiente:
-- Completar Fase 6: Testing y optimización restante
+- Completar Fase 6: Testing y documentación JSDoc restante
 
 ## Objetivo
 

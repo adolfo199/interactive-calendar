@@ -2,9 +2,10 @@
  * Weekly Calendar View Orchestrator
  * 
  * Coordinates the weekly calendar layout using specialized components
+ * Optimized with React.memo, useCallback and useMemo for performance
  */
 
-import React from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
 import { WeekHeader, WeekGrid } from './components'
 import { useCalendarTranslations } from '../../hooks/useCalendarTranslations'
 import type { CalendarEvent } from '../../types/appointment.types'
@@ -46,7 +47,7 @@ function getWeekDates(currentDate: Date): Date[] {
   return days
 }
 
-export function CalendarWeek({
+export const CalendarWeek = memo<CalendarWeekProps>(({
   events,
   currentDate,
   selectedDate,
@@ -55,14 +56,18 @@ export function CalendarWeek({
   loading = false,
   locale = 'es',
   getWeekDays
-}: CalendarWeekProps) {
+}) => {
   
   const { t } = useCalendarTranslations({ locale: locale as 'en' | 'es' })
-  const timeSlots = generateTimeSlots()
-  const weekDays = getWeekDates(currentDate)
   
-  // Generate localized week day names using translations
-  const weekDayNames = getWeekDays?.() || [
+  // Memoized time slots to prevent recreation on every render
+  const timeSlots = useMemo(() => generateTimeSlots(), [])
+  
+  // Memoized week days to prevent recalculation
+  const weekDays = useMemo(() => getWeekDates(currentDate), [currentDate])
+  
+  // Memoized week day names to prevent recreation
+  const weekDayNames = useMemo(() => getWeekDays?.() || [
     t('common:weekDays.short.monday'),
     t('common:weekDays.short.tuesday'),
     t('common:weekDays.short.wednesday'),
@@ -70,29 +75,30 @@ export function CalendarWeek({
     t('common:weekDays.short.friday'),
     t('common:weekDays.short.saturday'),
     t('common:weekDays.short.sunday')
-  ]
+  ], [getWeekDays, t])
   
-  const today = new Date()
+  // Memoized today's date
+  const today = useMemo(() => new Date(), [])
 
-  // Convert locale to browser locale format
-  const browserLocale = locale === 'en' ? 'en-US' : 'es-ES'
+  // Memoized browser locale
+  const browserLocale = useMemo(() => locale === 'en' ? 'en-US' : 'es-ES', [locale])
 
-  // Event handlers
-  const handleDateClick = (date: Date) => {
+  // Memoized event handlers to prevent unnecessary re-renders
+  const handleDateClick = useCallback((date: Date) => {
     console.log('Week - handleDateClick:', date)
     onDateClick?.(date)
-  }
+  }, [onDateClick])
 
-  const handleSlotClick = (date: Date, timeSlot: string) => {
+  const handleSlotClick = useCallback((date: Date, timeSlot: string) => {
     console.log('Week - handleSlotClick:', date, timeSlot)
     // For slot clicks, we pass the specific time slot date
     onDateClick?.(date)
-  }
+  }, [onDateClick])
 
-  const handleEventClick = (event: CalendarEvent) => {
+  const handleEventClick = useCallback((event: CalendarEvent) => {
     console.log('Week - handleEventClick:', event)
     onEventClick?.(event)
-  }
+  }, [onEventClick])
 
   if (loading) {
     return (
@@ -133,4 +139,6 @@ export function CalendarWeek({
       </div>
     </div>
   )
-}
+})
+
+CalendarWeek.displayName = 'CalendarWeek'

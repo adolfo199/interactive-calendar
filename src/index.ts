@@ -4,9 +4,20 @@ import './i18n';
 
 // Main calendar component export
 export { CalendarMain } from './CalendarMain'
+
+// Export view components from their new modular locations
 export { CalendarDay } from './calendar-views/day';
-export { CalendarWeek } from './CalendarWeek';
-export { CalendarLegend } from './CalendarLegend';
+export { CalendarWeek } from './calendar-views/week';
+export { CalendarMonth } from './calendar-views/month';
+
+// Export shared components
+export { 
+  AppointmentCard,
+  NavigationControls,
+  ViewSelector,
+  StatusIndicator,
+  TimeSlot
+} from './calendar-views/shared';
 
 // Exportar hooks
 export { useCalendar } from './hooks/useCalendar';

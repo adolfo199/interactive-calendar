@@ -2,8 +2,10 @@
  * Calendar Day View - Orchestrator Component
  * 
  * Daily calendar view that coordinates all day-specific subcomponents
+ * Optimized with React.memo, useCallback and useMemo for performance
  */
 
+import React, { memo, useCallback, useMemo } from 'react'
 import { DayHeader, DayEventsSummary, DayTimeGrid } from './components'
 import type { CalendarEvent } from '../../types/appointment.types'
 import { useCalendarTranslations } from '../../hooks/useCalendarTranslations'
@@ -18,22 +20,33 @@ interface CalendarDayProps {
   locale?: string
 }
 
-export function CalendarDay({
+export const CalendarDay = memo<CalendarDayProps>(({
   events,
   currentDate,
   onDateClick,
   onEventClick,
   loading = false,
   locale = 'es'
-}: CalendarDayProps) {
+}) => {
   
   const { t } = useCalendarTranslations({ locale: locale as 'en' | 'es' })
   
-  // Filter events for current day
-  const dayEvents = events.filter(event => {
-    const eventDate = new Date(event.start)
-    return eventDate.toDateString() === currentDate.toDateString()
-  })
+  // Memoized filtered events for current day to prevent recalculation
+  const dayEvents = useMemo(() => {
+    return events.filter(event => {
+      const eventDate = new Date(event.start)
+      return eventDate.toDateString() === currentDate.toDateString()
+    })
+  }, [events, currentDate])
+
+  // Memoized event handlers to prevent unnecessary re-renders
+  const handleDateClick = useCallback((date: Date) => {
+    onDateClick?.(date)
+  }, [onDateClick])
+
+  const handleEventClick = useCallback((event: CalendarEvent) => {
+    onEventClick?.(event)
+  }, [onEventClick])
 
   if (loading) {
     return (
@@ -54,14 +67,14 @@ export function CalendarDay({
       <DayHeader 
         currentDate={currentDate}
         locale={locale}
-        onDateClick={onDateClick}
+        onDateClick={handleDateClick}
       />
 
       {/* Events summary section */}
       <DayEventsSummary
         events={dayEvents}
         locale={locale}
-        onEventClick={onEventClick}
+        onEventClick={handleEventClick}
       />
 
       {/* Time grid with events */}
@@ -69,9 +82,11 @@ export function CalendarDay({
         events={events}
         currentDate={currentDate}
         locale={locale}
-        onDateClick={onDateClick}
-        onEventClick={onEventClick}
+        onDateClick={handleDateClick}
+        onEventClick={handleEventClick}
       />
     </div>
   )
-}
+})
+
+CalendarDay.displayName = 'CalendarDay'

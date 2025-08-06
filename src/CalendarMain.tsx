@@ -3,9 +3,10 @@
  * 
  * Coordinates all calendar views and provides global navigation and controls
  * Delegates to specific view components: CalendarMonth, CalendarWeek, CalendarDay
+ * Optimized with React.memo, useCallback and useMemo for performance
  */
 
-import React from 'react'
+import React, { memo, useCallback, useMemo } from 'react'
 import { cn } from './utils'
 import { Card, CardContent, CardHeader } from './components/ui/card'
 import { Button } from './components/ui/button'
@@ -57,7 +58,7 @@ interface CalendarMainProps extends Omit<CalendarProps, 'events' | 'view' | 'cur
   onAppointmentDelete?: (id: number) => Promise<void>
 }
 
-export function CalendarMain({
+export const CalendarMain = memo<CalendarMainProps>(({
   initialView = 'month',
   initialDate = new Date(),
   height = 'auto',
@@ -72,7 +73,7 @@ export function CalendarMain({
   onAppointmentDelete,
   loading = false,
   className,
-}: CalendarMainProps) {
+}) => {
   
   // Hooks
   const t = useCalendarTranslations({ locale })
@@ -93,8 +94,8 @@ export function CalendarMain({
     onDelete: onAppointmentDelete
   })
 
-  // Event handlers
-  const handleDateClick = (date: Date) => {
+  // Memoized event handlers to prevent unnecessary re-renders
+  const handleDateClick = useCallback((date: Date) => {
     console.log('Main orchestrator - handleDateClick:', date)
     
     // Execute custom callback if provided
@@ -105,9 +106,9 @@ export function CalendarMain({
     // Default behavior: navigate to day view
     calendar.goToDate(date)
     calendar.setView('day')
-  }
+  }, [onDateClick, calendar])
 
-  const handleEventClick = (event: CalendarEvent) => {
+  const handleEventClick = useCallback((event: CalendarEvent) => {
     console.log('Main orchestrator - handleEventClick:', event)
     
     // Execute custom callback if provided
@@ -117,9 +118,9 @@ export function CalendarMain({
     if (!onEventClick) {
       modal.openViewModal(event.extendedProps.appointment)
     }
-  }
+  }, [onEventClick, modal])
 
-  const handleCreateEvent = (date?: Date) => {
+  const handleCreateEvent = useCallback((date?: Date) => {
     console.log('Main orchestrator - handleCreateEvent:', date)
     
     // Execute custom callback if provided
@@ -129,54 +130,76 @@ export function CalendarMain({
     if (!onCreateEvent) {
       modal.openCreateModal(date)
     }
-  }
+  }, [onCreateEvent, modal])
 
-  // View change handler
-  const handleViewChange = (newView: CalendarView) => {
+  // Navigation handlers (memoized)
+  const handleViewChange = useCallback((newView: CalendarView) => {
     console.log('Main orchestrator - handleViewChange:', newView)
     calendar.setView(newView)
-  }
+  }, [calendar])
 
-  // Navigation handlers
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     console.log('Main orchestrator - handlePrevious')
     calendar.navigate('prev')
-  }
+  }, [calendar])
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     console.log('Main orchestrator - handleNext')
     calendar.navigate('next')
-  }
+  }, [calendar])
 
-  const handleToday = () => {
+  const handleToday = useCallback(() => {
     console.log('Main orchestrator - handleToday')
     calendar.goToToday()
-  }
+  }, [calendar])
 
-  // Render current view
-  const renderCurrentView = () => {
-    const commonProps = {
-      events: events.events,
-      currentDate: calendar.currentDate,
-      selectedDate: calendar.selectedDate,
-      onDateClick: handleDateClick,
-      onEventClick: handleEventClick,
-      loading: loading || events.loading,
-      locale
-    }
+  // Memoized common props for view components to prevent unnecessary re-renders
+  const commonViewProps = useMemo(() => ({
+    events: events.events,
+    currentDate: calendar.currentDate,
+    selectedDate: calendar.selectedDate,
+    onDateClick: handleDateClick,
+    onEventClick: handleEventClick,
+    loading: loading || events.loading,
+    locale
+  }), [
+    events.events,
+    calendar.currentDate,
+    calendar.selectedDate,
+    handleDateClick,
+    handleEventClick,
+    loading,
+    events.loading,
+    locale
+  ])
 
+  // Memoized view selector labels to prevent recreation
+  const viewSelectorLabels = useMemo(() => ({
+    month: t.t('views.month'),
+    week: t.t('views.week'),
+    day: t.t('views.day')
+  }), [t])
+
+  // Memoized container styles
+  const containerStyle = useMemo(() => ({
+    height: height === 'auto' ? 'auto' : (typeof height === 'number' ? `${height}px` : height),
+    minHeight: height === 'auto' ? '500px' : undefined
+  }), [height])
+
+  // Render current view (memoized)
+  const renderCurrentView = useCallback(() => {
     switch (calendar.view) {
       case 'day':
-        return <CalendarDay {...commonProps} />
+        return <CalendarDay {...commonViewProps} />
       
       case 'week':
-        return <CalendarWeek {...commonProps} />
+        return <CalendarWeek {...commonViewProps} />
       
       case 'month':
       default:
-        return <CalendarMonth {...commonProps} selectedDate={calendar.selectedDate || undefined} />
+        return <CalendarMonth {...commonViewProps} selectedDate={calendar.selectedDate || undefined} />
     }
-  }
+  }, [calendar.view, commonViewProps, calendar.selectedDate])
 
   return (
     <Card className={cn('w-full shadow-lg border-0 bg-gradient-to-br from-white to-gray-50/50', className)}>
@@ -214,11 +237,7 @@ export function CalendarMain({
                   currentView={calendar.view}
                   onViewChange={handleViewChange}
                   loading={loading}
-                  labels={{
-                    month: t.t('views.month'),
-                    week: t.t('views.week'),
-                    day: t.t('views.day')
-                  }}
+                  labels={viewSelectorLabels}
                 />
               )}
 
@@ -320,10 +339,7 @@ export function CalendarMain({
 
       <CardContent 
         className="p-0 bg-white" 
-        style={{ 
-          height: height === 'auto' ? 'auto' : (typeof height === 'number' ? `${height}px` : height),
-          minHeight: height === 'auto' ? '500px' : undefined
-        }}
+        style={containerStyle}
       >
         {/* Loading state */}
         {loading && events.loading ? (
@@ -385,4 +401,6 @@ export function CalendarMain({
       </CardContent>
     </Card>
   )
-}
+})
+
+CalendarMain.displayName = 'CalendarMain'
