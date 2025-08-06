@@ -166,7 +166,7 @@ export default {
     ...${JSON.stringify(extractedClasses)},
     // Clases adicionales comunes
     'min-h-screen', 'max-w-7xl', 'mx-auto',
-    'p-4', 'p-6', 'mb-6', 'mt-2', 'space-y-4',
+    'p-4', 'p-6', 'mb-6', 'mt-2', 'gap-4',
     'text-3xl', 'text-xl', 'text-lg', 'text-sm', 'text-xs',
     'font-bold', 'font-medium', 'font-semibold',
     'bg-gray-50', 'bg-gray-100', 'bg-white',
@@ -221,9 +221,11 @@ export default {
     'ml-1', 'ml-2', 'ml-3', 'ml-4', 'ml-5', 'ml-8',
     'mr-1', 'mr-2', 'mr-3', 'mr-4', 'mr-5', 'mr-8',
     
-    // Espaciado entre elementos
-    'space-x-0.5', 'space-x-1', 'space-x-1.5', 'space-x-2', 'space-x-3', 'space-x-4', 'space-x-6',
-    'space-y-0.5', 'space-y-1', 'space-y-1.5', 'space-y-2', 'space-y-3', 'space-y-4', 'space-y-6',
+    // Espaciado entre elementos - usando gap en lugar de space-x/space-y
+    'gap-0.5', 'gap-1', 'gap-1.5', 'gap-2', 'gap-3', 'gap-4', 'gap-6',
+    // Margins directos para espaciado manual
+    '[&>*:not(:first-child)]:mt-1', '[&>*:not(:first-child)]:mt-1.5', '[&>*:not(:first-child)]:mt-2',
+    '[&>*:not(:first-child)]:ml-1', '[&>*:not(:first-child)]:ml-1.5', '[&>*:not(:first-child)]:ml-2',
     
     // Justificación y alineación
     'justify-start', 'justify-end', 'justify-center', 'justify-between', 'justify-around', 'justify-evenly',
@@ -283,8 +285,8 @@ export default {
     'tracking-tight', 'tracking-normal', 'tracking-wide',
     
     // Clases de layout adicionales
-    'space-x-1', 'space-x-2', 'space-x-3', 'space-x-4',
-    'space-y-1', 'space-y-2', 'space-y-3', 'space-y-4',
+    'gap-1', 'gap-2', 'gap-3', 'gap-4',
+    'flex-col', 'flex-row', 'flex-wrap',
     'divide-x', 'divide-y', 'divide-gray-200',
     
     // ===== CLASES ESPECÍFICAS DE COMPONENTES UI =====
