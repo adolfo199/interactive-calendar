@@ -1,0 +1,60 @@
+{
+  "title": "Calendario",
+  "navigation": {
+    "previous": "Anterior",
+    "next": "Siguiente", 
+    "today": "Hoy"
+  },
+  "views": {
+    "month": "Mes",
+    "week": "Semana",
+    "day": "Día"
+  },
+  "weekDays": {
+    "short": {
+      "monday": "Lun",
+      "tuesday": "Mar", 
+      "wednesday": "Mié",
+      "thursday": "Jue",
+      "friday": "Vie",
+      "saturday": "Sáb",
+      "sunday": "Dom"
+    },
+    "long": {
+      "monday": "Lunes",
+      "tuesday": "Martes",
+      "wednesday": "Miércoles", 
+      "thursday": "Jueves",
+      "friday": "Viernes",
+      "saturday": "Sábado",
+      "sunday": "Domingo"
+    }
+  },
+  "buttons": {
+    "create": "Nueva Cita",
+    "retry": "Reintentar",
+    "close": "Cerrar"
+  },
+  "loading": {
+    "calendar": "Cargando calendario...",
+    "events": "Obteniendo eventos y configuración",
+    "dailyView": "Cargando vista diaria...",
+    "weeklyView": "Cargando vista semanal...",
+    "schedules": "Preparando horarios y eventos"
+  },
+  "errors": {
+    "loadEvents": "Error al cargar eventos",
+    "unknown": "Ha ocurrido un error inesperado"
+  },
+  "stats": {
+    "totalAppointments": "{{count}} citas totales",
+    "status": "Estados:",
+    "moreEvents": "+{{count}} más eventos"
+  },
+  "dayView": {
+    "eventsCount_one": "{{count}} evento programado",
+    "eventsCount_other": "{{count}} eventos programados",
+    "participants_one": "{{count}} participante",
+    "participants_other": "{{count}} participantes"
+  }
+}

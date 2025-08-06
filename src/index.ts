@@ -1,19 +1,34 @@
 // Exportar componentes principales
-export { CalendarMain } from './CalendarMain';
-export { CalendarDay } from './CalendarDay';
-export { CalendarWeek } from './CalendarWeek';
-export { CalendarLegend } from './CalendarLegend';
+// Initialize i18n before exporting components
+import './i18n';
+
+// Main calendar component export
+export { CalendarMain } from './CalendarMain'
+
+// Export view components from their new modular locations
+export { CalendarDay } from './calendar-views/day';
+export { CalendarWeek } from './calendar-views/week';
+export { CalendarMonth } from './calendar-views/month';
+
+// Export shared components
+export { 
+  AppointmentCard,
+  NavigationControls,
+  ViewSelector,
+  StatusIndicator,
+  TimeSlot
+} from './calendar-views/shared';
 
 // Exportar hooks
 export { useCalendar } from './hooks/useCalendar';
 export { useCalendarEvents } from './hooks/useCalendarEvents';
-export { useCitaModal } from './hooks/useCitaModal';
+export { useAppointmentModal } from './hooks/useAppointmentModal';
 
-// Exportar tipos
-export type * from './types/cita.types';
+// Export types from appointment types
+export type * from './types/appointment.types';
 
-// Exportar datos de prueba (opcional)
-export { citasEjemplo, eventosEjemplo, getEventosEjemplo, simulateDataLoad } from './mockData';
+// Export mock data
+export { exampleAppointments, exampleEvents, getExampleEvents, simulateDataLoad } from './mockData';
 
 // Exportar plugin de Tailwind
 export { default as tailwindPlugin } from './plugin.js';

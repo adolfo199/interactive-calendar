@@ -1,29 +1,103 @@
 # 📅 Interactive Calendar
 
-A modern, interactive calendar component library for React with TypeScript. Designed specifically for appointment management systems with comprehensive event handling, multiple view modes, and Spanish localization.
+Un componente de calendario interactivo y moderno para React con TypeScript, diseñado especialmente para sistemas de gestión de citas y eventos.
 
-## ✨ Features
+## ✨ Características
 
-- 🎨 **Modern UI**: Built with Tailwind CSS and reusable components
-- 📱 **Responsive**: Adapts to different screen sizes
-- ⚡ **Optimized**: High performance with React and TypeScript
-- 🔧 **Customizable**: Easy to integrate and customize
-- 📅 **Multiple Views**: Support for month, week, and day views
-- 🎯 **Interactive Events**: Complete event handling for clicks and creation
-- 💼 **Appointment Management**: Designed for medical/professional appointment systems
-- 🌍 **Spanish Localization**: Full Spanish language support
+- 🎨 **Interfaz moderna**: Diseñado con Tailwind CSS y componentes reutilizables
+- 📱 **Responsive**: Se adapta a diferentes tamaños de pantalla
+- ⚡ **Performance**: Optimizado con React y TypeScript
+- 🔧 **Personalizable**: Fácil de integrar y personalizar
+- 📅 **Múltiples vistas**: Soporte para vista mensual y otras vistas
+- 🎯 **Eventos interactivos**: Manejo completo de eventos de clic y creación
+- 💼 **Gestión de citas**: Diseñado para sistemas de citas médicas/profesionales
 
-## 📦 Installation
+## 📖 Ejemplos de Uso
 
-### 🚀 Quick Start (Recommended)
+¿Quieres ver el calendario en acción? Consulta nuestra **[guía completa de ejemplos](./EXAMPLES.md)** que incluye:
 
-The simplest way to get started - just import the pre-compiled CSS:
+- 🚀 **Ejemplo básico**: Integración simple en 5 minutos
+- 🎯 **Modal y eventos**: Manejo avanzado de estado y creación de eventos  
+- 🏥 **Sistema de citas médicas**: Implementación completa para consultorios
+- 🔗 **Integración con API**: Sincronización con backend REST
+- 🎨 **Temas personalizados**: Customización visual completa
+- 📱 **Diseño responsive**: Adaptación a móviles y tablets
+- 💡 **Tips de optimización**: Mejores prácticas y rendimiento
+
+➡️ **[Ver todos los ejemplos →](./EXAMPLES.md)**
+
+## �‍💻 Desarrollo
+
+### Configuración del Entorno
+```bash
+git clone <tu-repo>
+cd Calendar
+npm install
+```
+
+### Workflow de Desarrollo (GitFlow)
+
+Usamos GitFlow para mantener un desarrollo organizado:
+
+#### 1. Iniciar una nueva feature
+```bash
+./scripts/git-workflow.sh feature mi-nueva-feature
+```
+
+#### 2. Desarrollar con commits frecuentes
+```bash
+# Hacer cambios en el código
+./scripts/git-workflow.sh commit "feat: add new calendar navigation"
+```
+
+#### 3. Finalizar feature
+```bash
+./scripts/git-workflow.sh finish-feature mi-nueva-feature
+```
+
+### Comandos Útiles
+```bash
+# Ver estado del proyecto
+./scripts/git-workflow.sh status
+
+# Compilar para desarrollo
+npm run build
+
+# Ejecutar tests
+npm test
+
+# Ver componentes en Storybook (si disponible)
+npm run storybook
+```
+
+### Estructura de Ramas
+- `master`: Código de producción
+- `develop`: Desarrollo activo
+- `feature/*`: Nuevas características
+- `release/*`: Preparación de versiones
+- `hotfix/*`: Correcciones urgentes
+
+### Convenciones de Commits
+- `feat:` Nueva funcionalidad
+- `fix:` Corrección de bug  
+- `docs:` Cambios en documentación
+- `style:` Cambios de formato
+- `refactor:` Refactorización
+- `test:` Tests
+- `chore:` Mantenimiento
+
+## �📦 Instalación
+
+### 🚀 Opción SÚPER SIMPLE (Recomendada)
+
+Para la experiencia más simple, solo importa el CSS pre-compilado:
 
 ```bash
 npm install @interactive/calendar
 ```
 
 ```javascript
+// En tu App.tsx - ¡Solo esto!
 import { CalendarMain } from '@interactive/calendar';
 import '@interactive/calendar/styles';
 
@@ -32,36 +106,36 @@ function App() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '1rem' }}>
       <CalendarMain 
         initialView="month"
-        onDateClick={(date) => console.log('Date:', date)}
-        onEventClick={(event) => console.log('Event:', event)}
-        onCreateEvent={(date) => console.log('Create:', date)}
+        onDateClick={(date) => console.log('Fecha:', date)}
+        onEventClick={(event) => console.log('Evento:', event)}
+        onCreateEvent={(date) => console.log('Crear:', date)}
       />
     </div>
   );
 }
 ```
 
-✅ **No Tailwind setup required**  
-✅ **No manual CSS variables**  
-✅ **Works with any setup**  
-✅ **Only 10KB of CSS**  
+✅ **Sin configuración de Tailwind**  
+✅ **Sin variables CSS manuales**  
+✅ **Funciona con cualquier setup**  
+✅ **Solo 10KB de CSS**  
 
 ---
 
-### ⚙️ Advanced Setup (For Customization)
+### ⚙️ Opción AVANZADA (Para customización)
 
-If you need to customize colors or integrate with your design system:
+Si necesitas personalizar colores o integrar con tu sistema de diseño:
 
 ```bash
 npm install @interactive/calendar tailwindcss postcss autoprefixer
 ```
 
-**1. Setup Tailwind CSS:**
+**1. Configurar Tailwind CSS:**
 ```bash
 npx tailwindcss init -p
 ```
 
-**2. Configure `tailwind.config.js`:**
+**2. Configurar `tailwind.config.js`:**
 ```javascript
 import { tailwindPlugin } from '@interactive/calendar';
 
@@ -75,14 +149,17 @@ export default {
 }
 ```
 
-**3. Add Tailwind directives to `src/index.css`:**
+**3. Agregar directivas de Tailwind a `src/index.css`:**
 ```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 ```
 
-## 🚀 Basic Usage
+Con esta opción puedes personalizar colores, agregar tus propias clases, etc.
+```
+
+## 🚀 Uso básico
 
 ```tsx
 import React from 'react';
@@ -94,7 +171,7 @@ function App() {
       <div className="max-w-7xl mx-auto">
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
-            My Appointment System
+            Mi Sistema de Citas
           </h1>
         </header>
         
@@ -102,16 +179,16 @@ function App() {
           <CalendarMain 
             initialView="month"
             onDateClick={(date: Date) => {
-              console.log('Selected date:', date);
-              // Handle date selection
+              console.log('Fecha seleccionada:', date);
+              // Aquí puedes manejar la selección de fecha
             }}
             onEventClick={(event) => {
-              console.log('Clicked event:', event);
-              // Handle event click
+              console.log('Evento clickeado:', event);
+              // Aquí puedes manejar el clic en un evento
             }}
             onCreateEvent={(date?: Date) => {
-              console.log('Create event for date:', date);
-              // Open modal to create an event
+              console.log('Crear evento para fecha:', date);
+              // Aquí puedes abrir un modal para crear un evento
             }}
           />
         </main>
@@ -123,40 +200,41 @@ function App() {
 export default App;
 ```
 
-## 📋 CalendarMain Props
+## 📋 Props del componente CalendarMain
 
-| Prop | Type | Description | Required |
-|------|------|-------------|----------|
-| `initialView` | `string` | Initial calendar view (`"month"`, etc.) | ✅ |
-| `onDateClick` | `(date: Date) => void` | Callback when a date is clicked | ✅ |
-| `onEventClick` | `(event: any) => void` | Callback when an event is clicked | ✅ |
-| `onCreateEvent` | `(date?: Date) => void` | Callback to create a new event | ✅ |
+| Prop | Tipo | Descripción | Requerido |
+|------|------|-------------|-----------|
+| `initialView` | `string` | Vista inicial del calendario (`"month"`, etc.) | ✅ |
+| `onDateClick` | `(date: Date) => void` | Callback cuando se hace clic en una fecha | ✅ |
+| `onEventClick` | `(event: any) => void` | Callback cuando se hace clic en un evento | ✅ |
+| `onCreateEvent` | `(date?: Date) => void` | Callback para crear un nuevo evento | ✅ |
 
-## 🎯 Advanced Example
+## 🎯 Ejemplo avanzado
 
 ```tsx
 import React, { useState } from 'react';
 import { CalendarMain } from '@interactive/calendar';
 
-interface Appointment {
+interface Cita {
   id: string;
-  title: string;
-  clientName: string;
-  date: Date;
+  titulo: string;
+  cliente_nombre: string;
+  fecha: Date;
+  // ... otras propiedades
 }
 
-function MyAppointmentSystem() {
+function MiSistemaDeCitas() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
-    console.log('Selected date:', date.toLocaleDateString());
+    console.log('Fecha seleccionada:', date.toLocaleDateString());
   };
 
   const handleEventClick = (event: any) => {
-    const appointment = event.extendedProps.cita;
-    alert(`Appointment: ${appointment.titulo}\\nClient: ${appointment.cliente_nombre}`);
+    const cita = event.extendedProps.cita;
+    alert(`Cita: ${cita.titulo}\\nCliente: ${cita.cliente_nombre}`);
   };
 
   const handleCreateEvent = (date?: Date) => {
@@ -176,16 +254,17 @@ function MyAppointmentSystem() {
           />
         </div>
         
+        {/* Aquí puedes agregar tu modal para crear eventos */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg">
-              <h2>Create New Appointment</h2>
-              <p>Date: {selectedDate?.toLocaleDateString()}</p>
+              <h2>Crear nueva cita</h2>
+              <p>Fecha: {selectedDate?.toLocaleDateString()}</p>
               <button 
                 onClick={() => setShowModal(false)}
                 className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
               >
-                Close
+                Cerrar
               </button>
             </div>
           </div>
@@ -195,54 +274,52 @@ function MyAppointmentSystem() {
   );
 }
 
-export default MyAppointmentSystem;
+export default MiSistemaDeCitas;
 ```
 
-## 🔧 System Requirements
+## 🔧 Requisitos del sistema
 
 - **React**: ^18.0.0
-- **TypeScript**: ^4.0.0 (recommended)
+- **TypeScript**: ^4.0.0 (recomendado)
 - **Node.js**: ^16.0.0
 - **Tailwind CSS**: ^3.0.0
 
-## 🐛 Troubleshooting
+## ⚠️ Notas importantes
 
-### Tailwind classes not applying
+1. **Instalación súper simple**: Solo necesitas instalar el paquete y Tailwind CSS, el plugin se encarga del resto.
 
-- Verify that you've added the `tailwindPlugin` to your Tailwind configuration
-- Make sure the `@tailwind` directives are in your main CSS file
-- Check that PostCSS is configured correctly
+2. **Plugin automático**: El `tailwindPlugin` incluido configura automáticamente todos los colores, variables CSS y estilos necesarios.
 
-### Plugin import errors
+3. **Compatible con cualquier proyecto**: Funciona tanto con ES modules como con CommonJS.
 
-- For ES modules: `import { tailwindPlugin } from '@interactive/calendar'`
-- For CommonJS: `const { tailwindPlugin } = require('@interactive/calendar')`
+4. **Sin configuración manual**: No necesitas copiar variables CSS ni configurar colores manualmente.
 
-### Component not rendering
+## 🐛 Solución de problemas
 
-- Verify that you've installed React and TypeScript
-- Make sure the Tailwind plugin is configured correctly
+### Las clases de Tailwind no se aplican
 
-## 🤝 Contributing
+- Verifica que hayas agregado el `tailwindPlugin` a tu configuración de Tailwind
+- Asegúrate de que las directivas `@tailwind` estén en tu CSS principal
+- Revisa que PostCSS esté configurado correctamente
 
-Contributions are welcome! Please open an issue first to discuss what you would like to change.
+### Errores de importación del plugin
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+- Para ES modules: `import { tailwindPlugin } from '@interactive/calendar'`
+- Para CommonJS: `const { tailwindPlugin } = require('@interactive/calendar')`
 
-## 📄 License
+### El componente no se renderiza
 
-MIT License - see the [LICENSE](LICENSE) file for details.
+- Verifica que hayas instalado React y TypeScript
+- Asegúrate de que el plugin de Tailwind esté configurado correctamente
 
-## 🔗 Links
+## 📄 Licencia
 
-- [GitHub Repository](https://github.com/adolfo199/interactive-calendar)
-- [npm Package](https://www.npmjs.com/package/@interactive/calendar)
-- [Issues](https://github.com/adolfo199/interactive-calendar/issues)
+MIT
+
+## 🤝 Contribuir
+
+Las contribuciones son bienvenidas. Por favor, abre un issue primero para discutir los cambios que te gustaría hacer.
 
 ---
 
-**Built with ❤️ for the React community**
+**Desarrollado con ❤️ para la comunidad React**

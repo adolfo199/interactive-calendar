@@ -1,40 +1,42 @@
 /**
- * Hook para gestión del estado del calendario
+ * Hook for calendar state management
  * 
- * Maneja la navegación, vista y selección de fechas del calendario
+ * Handles navigation, view and date selection for the calendar
  */
 
 import { useState, useCallback, useMemo } from 'react'
-import type { VistaCalendario } from '../types/cita.types'
+import type { CalendarView } from '../types/appointment.types'
+import { useCalendarTranslations } from './useCalendarTranslations'
 
 interface UseCalendarProps {
-  initialView?: VistaCalendario
+  initialView?: CalendarView
   initialDate?: Date
+  locale?: 'en' | 'es'
 }
 
-// Función auxiliar para obtener días del calendario
-function getCalendarDays(currentDate: Date, view: VistaCalendario): Date[] {
+// Helper function to get calendar days
+function getCalendarDays(currentDate: Date, view: CalendarView): Date[] {
   const days: Date[] = []
   
   if (view === 'month') {
-    // Para vista mensual, obtener todos los días del mes con algunos del anterior y siguiente
+    // For monthly view, get all days of the month with some from previous and next
     const year = currentDate.getFullYear()
     const month = currentDate.getMonth()
     const firstDay = new Date(year, month, 1)
     
-    // Obtener el primer lunes de la cuadrícula (puede ser del mes anterior)
+    // Get the first Monday of the grid (may be from previous month)
     const startDate = new Date(firstDay)
-    const firstDayOfWeek = firstDay.getDay() === 0 ? 7 : firstDay.getDay() // Lunes = 1
+    const firstDayOfWeek = firstDay.getDay() === 0 ? 7 : firstDay.getDay() // Monday = 1
     startDate.setDate(startDate.getDate() - (firstDayOfWeek - 1))
     
-    // Generar 42 días (6 semanas x 7 días)
+    // Generate 42 days (6 weeks x 7 days)
     for (let i = 0; i < 42; i++) {
       const day = new Date(startDate)
       day.setDate(startDate.getDate() + i)
       days.push(day)
     }
   } else if (view === 'week') {
-    // Para vista semanal, obtener los 7 días de la semana
+    // For weekly view, get the 7 days of the week
     const startOfWeek = new Date(currentDate)
     const dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
     startOfWeek.setDate(currentDate.getDate() - (dayOfWeek - 1))
@@ -45,7 +47,7 @@ function getCalendarDays(currentDate: Date, view: VistaCalendario): Date[] {
       days.push(day)
     }
   } else {
-    // Para vista diaria, solo el día actual
+    // For daily view, only the current day
     days.push(new Date(currentDate))
   }
   
@@ -101,18 +103,25 @@ function isSameDay(date1: Date, date2: Date): boolean {
 
 export function useCalendar({ 
   initialView = 'month', 
-  initialDate = new Date() 
+  initialDate = new Date(),
+  locale = 'es'
 }: UseCalendarProps = {}) {
   const [currentDate, setCurrentDate] = useState(initialDate)
-  const [view, setView] = useState<VistaCalendario>(initialView)
+  const [view, setView] = useState<CalendarView>(initialView)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
-  // Obtener días del calendario según la vista
+  // Get translations
+  const { t } = useCalendarTranslations({ locale })
+
+  // Convert locale to browser locale format
+  const browserLocale = locale === 'en' ? 'en-US' : 'es-ES'
+
+  // Get calendar days based on view
   const calendarDays = useMemo(() => {
     return getCalendarDays(currentDate, view)
   }, [currentDate, view])
 
-  // Obtener título del calendario
+  // Get calendar title
   const title = useMemo(() => {
     const options: Intl.DateTimeFormatOptions = { 
       month: 'long', 
@@ -121,7 +130,7 @@ export function useCalendar({
     
     switch (view) {
       case 'month':
-        return currentDate.toLocaleDateString('es-ES', options)
+        return currentDate.toLocaleDateString(browserLocale, options)
       case 'week': {
         const startOfWeek = new Date(currentDate)
         const dayOfWeek = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
@@ -130,21 +139,23 @@ export function useCalendar({
         const endOfWeek = new Date(startOfWeek)
         endOfWeek.setDate(startOfWeek.getDate() + 6)
         
-        return `${startOfWeek.getDate()} - ${endOfWeek.getDate()} de ${currentDate.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}`
+        // Use localized "de" for Spanish, "of" for English
+        const connector = locale === 'en' ? 'of' : 'de'
+        return `${startOfWeek.getDate()} - ${endOfWeek.getDate()} ${connector} ${currentDate.toLocaleDateString(browserLocale, { month: 'long', year: 'numeric' })}`
       }
       case 'day':
-        return currentDate.toLocaleDateString('es-ES', { 
+        return currentDate.toLocaleDateString(browserLocale, { 
           weekday: 'long', 
           year: 'numeric', 
           month: 'long', 
           day: 'numeric' 
         })
       default:
-        return currentDate.toLocaleDateString('es-ES', options)
+        return currentDate.toLocaleDateString(browserLocale, options)
     }
-  }, [currentDate, view])
+  }, [currentDate, view, browserLocale, locale])
 
-  // Navegación
+  // Navigation
   const navigate = useCallback((direction: 'prev' | 'next') => {
     setCurrentDate(prevDate => {
       switch (view) {
@@ -166,22 +177,22 @@ export function useCalendar({
     })
   }, [view])
 
-  // Ir a hoy
+  // Go to today
   const goToToday = useCallback(() => {
     setCurrentDate(new Date())
   }, [])
 
-  // Ir a una fecha específica
+  // Go to specific date
   const goToDate = useCallback((date: Date) => {
     setCurrentDate(date)
   }, [])
 
-  // Seleccionar fecha
+  // Select date
   const selectDate = useCallback((date: Date) => {
     setSelectedDate(date)
   }, [])
 
-  // Limpiar selección
+  // Clear selection
   const clearSelection = useCallback(() => {
     setSelectedDate(null)
   }, [])
@@ -200,19 +211,20 @@ export function useCalendar({
   }, [currentDate])
 
   const getWeekDays = useCallback(() => {
-    // Retornar días de la semana empezando por lunes
-    return ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
-  }, [])
+    // Return localized weekday abbreviations starting from Monday
+    const weekDayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    return weekDayKeys.map(day => t(`weekDays.short.${day}`))
+  }, [t])
 
   return {
-    // Estado
+    // State
     currentDate,
     view,
     selectedDate,
     calendarDays,
     title,
     
-    // Acciones
+    // Actions
     navigate,
     goToToday,
     goToDate,
