@@ -3,9 +3,21 @@
 ## Estado Actual del Proyecto
 **Rama:** `views-refactor` ✅  
 **Última actualización:** 5 de agosto de 2025  
-**Progreso general:** 🟢 Fases 1, 2, 3, 4 y 5 Completadas | ⏳ Fase 6 en Progreso (70%)
+**Progreso general:** 🟢 Fases 1, 2, 3, 4 y 5 Completadas | ⏳ Fase 6 en Progreso (85%)
 
 ## 📝 Changelog Reciente
+
+### 5 de agosto de 2025 - Refactorización Final CalendarMain
+- ✅ **Refactorización exitosa de CalendarMain (406 → 263 líneas)**
+  - 🎯 Reducción de **35% de líneas** (-143 líneas) con mejor modularidad
+  - 📦 **CalendarToolbar** (103 líneas): Título, navegación, view selector, create button
+  - 📊 **CalendarStatsBar** (80 líneas): Total appointments y status indicators
+  - 🎨 **CalendarContent** (99 líneas): Loading/error states y view renderer
+  - 🏗️ **Estructura modular**: `/calendar-views/main/components/` para subcomponentes
+  - ✅ **Optimización mantenida**: React.memo, useCallback, useMemo en todos los nuevos componentes
+  - 🎯 **Meta cumplida**: Ningún componente supera las 450 líneas
+  - 📐 **Separación de responsabilidades**: Cada subcomponente tiene una responsabilidad específica
+  - 🧪 **Testeabilidad mejorada**: Subcomponentes más pequeños y focalizados
 
 ### 5 de agosto de 2025 - Optimización React Performance
 - ✅ **Implementación completa de React.memo en componentes principales**
@@ -30,10 +42,13 @@
     - AppointmentCard ✅ (ya optimizado previamente)
     - ViewSelector ✅ (ya optimizado previamente)
     - WeekGrid ✅ (ya optimizado previamente)
-    - CalendarMain ✅ (recién optimizado)
+    - CalendarMain ✅ (recién optimizado y refactorizado)
     - CalendarMonth ✅ (recién optimizado)
     - CalendarWeek ✅ (recién optimizado)
     - CalendarDay ✅ (recién optimizado)
+    - CalendarToolbar ✅ (nuevo subcomponente optimizado)
+    - CalendarStatsBar ✅ (nuevo subcomponente optimizado)
+    - CalendarContent ✅ (nuevo subcomponente optimizado)
 
 ### 5 de agosto de 2025 - Optimización CSS
 - ✅ **Eliminación masiva de clases space-x/space-y problemáticas**
@@ -105,19 +120,23 @@
   - Arquitectura modular y separación de responsabilidades
 
 ### ⏳ En Progreso:
-- **Fase 6:** Testing y optimización (70%)
+- **Fase 6:** Testing y optimización (85%)
   - ✅ Eliminación de clases space-x/space-y problemáticas completada
   - ✅ Reemplazadas por alternativas confiables (gap, margin directo)
   - ✅ CSS optimizado de 38KB → 37KB (-1KB, -8 clases)
   - ✅ Optimización de performance con React.memo, useCallback, useMemo:
     - CalendarMain, CalendarMonth, CalendarWeek, CalendarDay optimizados
     - AppointmentCard, ViewSelector, WeekGrid ya estaban optimizados
+    - CalendarToolbar, CalendarStatsBar, CalendarContent nuevos y optimizados
+  - ✅ Refactorización de componentes grandes (>450 líneas):
+    - CalendarMain: 406 → 263 líneas (-35% reducción)
+    - Extracción de 3 subcomponentes modulares y optimizados
   - ⏳ Tests unitarios para cada componente
   - ⏳ Tests de integración para orquestadores
   - ⏳ Documentación JSDoc
 
 ### 📋 Pendiente:
-- Completar Fase 6: Testing y documentación JSDoc restante
+- Completar Fase 6: Testing y documentación JSDoc (15% restante)
 
 ## Objetivo
 
