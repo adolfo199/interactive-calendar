@@ -1,10 +1,10 @@
-# 📝 Usage Examples - Interactive Calendar
+# 📝 Ejemplos de Uso - Interactive Calendar
 
-This guide contains practical examples for using the Interactive Calendar component in different scenarios.
+Esta guía contiene ejemplos prácticos para usar el componente Interactive Calendar en diferentes escenarios.
 
-## 🚀 Basic Example
+## 🚀 Ejemplo Básico
 
-The simplest example to get started with the calendar:
+El ejemplo más simple para comenzar a usar el calendario:
 
 ```tsx
 import React from 'react';
@@ -16,9 +16,9 @@ function App() {
     <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb', padding: '1rem' }}>
       <CalendarMain 
         initialView="month"
-        onDateClick={(date) => console.log('Selected date:', date)}
-        onEventClick={(event) => console.log('Event clicked:', event)}
-        onCreateEvent={(date) => console.log('Create event for:', date)}
+        onDateClick={(date) => console.log('Fecha seleccionada:', date)}
+        onEventClick={(event) => console.log('Evento clickeado:', event)}
+        onCreateEvent={(date) => console.log('Crear evento para:', date)}
       />
     </div>
   );
@@ -27,9 +27,9 @@ function App() {
 export default App;
 ```
 
-## 🎯 Example with State and Modal
+## 🎯 Ejemplo con Estado y Modal
 
-A more advanced example that includes state management and modal for creating events:
+Un ejemplo más avanzado que incluye manejo de estado y modal para crear eventos:
 
 ```tsx
 import React, { useState } from 'react';
@@ -49,11 +49,11 @@ function CalendarWithModal() {
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
-    console.log('Selected date:', date.toLocaleDateString());
+    console.log('Fecha seleccionada:', date.toLocaleDateString());
   };
 
   const handleEventClick = (event: any) => {
-    alert(`Event: ${event.title}`);
+    alert(`Evento: ${event.title}`);
   };
 
   const handleCreateEvent = (date?: Date) => {
@@ -79,7 +79,7 @@ function CalendarWithModal() {
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          My Personal Calendar
+          Mi Calendario Personal
         </h1>
         
         <CalendarMain
@@ -89,13 +89,13 @@ function CalendarWithModal() {
           onCreateEvent={handleCreateEvent}
         />
         
-        {/* Modal for creating events */}
+        {/* Modal para crear eventos */}
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4">
-              <h2 className="text-xl font-bold mb-4">Create New Event</h2>
+              <h2 className="text-xl font-bold mb-4">Crear Nuevo Evento</h2>
               <p className="text-gray-600 mb-4">
-                Date: {selectedDate?.toLocaleDateString()}
+                Fecha: {selectedDate?.toLocaleDateString()}
               </p>
               
               <form onSubmit={(e) => {
@@ -108,26 +108,26 @@ function CalendarWithModal() {
               }}>
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Event title
+                    Título del evento
                   </label>
                   <input
                     type="text"
                     name="title"
                     required
                     className="w-full p-2 border border-gray-300 rounded-md"
-                    placeholder="e.g: Important meeting"
+                    placeholder="Ej: Reunión importante"
                   />
                 </div>
                 
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Description (optional)
+                    Descripción (opcional)
                   </label>
                   <textarea
                     name="description"
                     rows={3}
                     className="w-full p-2 border border-gray-300 rounded-md"
-                    placeholder="Event details..."
+                    placeholder="Detalles del evento..."
                   />
                 </div>
                 
@@ -137,13 +137,13 @@ function CalendarWithModal() {
                     onClick={() => setShowModal(false)}
                     className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
                   >
-                    Cancel
+                    Cancelar
                   </button>
                   <button
                     type="submit"
                     className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                   >
-                    Create Event
+                    Crear Evento
                   </button>
                 </div>
               </form>
@@ -158,98 +158,98 @@ function CalendarWithModal() {
 export default CalendarWithModal;
 ```
 
-## 🏥 Medical Appointment System Example
+## 🏥 Ejemplo Sistema de Citas Médicas
 
-A complete example for a medical appointment management system:
+Un ejemplo completo para un sistema de gestión de citas médicas:
 
 ```tsx
 import React, { useState, useEffect } from 'react';
 import { CalendarMain } from '@interactive/calendar';
 import '@interactive/calendar/styles';
 
-interface Appointment {
+interface Cita {
   id: string;
-  title: string;
-  patient_name: string;
-  patient_phone: string;
-  date: Date;
-  time: string;
-  status: 'confirmed' | 'pending' | 'cancelled';
-  notes?: string;
+  titulo: string;
+  cliente_nombre: string;
+  cliente_telefono: string;
+  fecha: Date;
+  hora: string;
+  estado: 'confirmada' | 'pendiente' | 'cancelada';
+  notas?: string;
 }
 
-function MedicalAppointmentSystem() {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+function SistemaCitasMedicas() {
+  const [citas, setCitas] = useState<Cita[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [selectedCita, setSelectedCita] = useState<Cita | null>(null);
 
-  // Simulate appointment data
+  // Simular datos de citas
   useEffect(() => {
-    const sampleAppointments: Appointment[] = [
+    const citasEjemplo: Cita[] = [
       {
         id: '1',
-        title: 'General Consultation',
-        patient_name: 'Mary Garcia',
-        patient_phone: '+34 123 456 789',
-        date: new Date(2025, 7, 8), // August 8th
-        time: '10:00',
-        status: 'confirmed',
-        notes: 'First consultation'
+        titulo: 'Consulta General',
+        cliente_nombre: 'María García',
+        cliente_telefono: '+34 123 456 789',
+        fecha: new Date(2025, 7, 8), // 8 de agosto
+        hora: '10:00',
+        estado: 'confirmada',
+        notas: 'Primera consulta'
       },
       {
         id: '2',
-        title: 'Check-up',
-        patient_name: 'John Perez',
-        patient_phone: '+34 987 654 321',
-        date: new Date(2025, 7, 10), // August 10th
-        time: '15:30',
-        status: 'pending'
+        titulo: 'Revisión',
+        cliente_nombre: 'Juan Pérez',
+        cliente_telefono: '+34 987 654 321',
+        fecha: new Date(2025, 7, 10), // 10 de agosto
+        hora: '15:30',
+        estado: 'pendiente'
       }
     ];
-    setAppointments(sampleAppointments);
+    setCitas(citasEjemplo);
   }, []);
 
   const handleDateClick = (date: Date) => {
     setSelectedDate(date);
-    const dayAppointments = appointments.filter(appointment => 
-      appointment.date.toDateString() === date.toDateString()
+    const citasDelDia = citas.filter(cita => 
+      cita.fecha.toDateString() === date.toDateString()
     );
     
-    if (dayAppointments.length > 0) {
-      console.log(`Appointments for ${date.toLocaleDateString()}:`, dayAppointments);
+    if (citasDelDia.length > 0) {
+      console.log(`Citas para ${date.toLocaleDateString()}:`, citasDelDia);
     } else {
-      console.log(`No appointments for ${date.toLocaleDateString()}`);
+      console.log(`No hay citas para ${date.toLocaleDateString()}`);
     }
   };
 
   const handleEventClick = (event: any) => {
-    const appointment = appointments.find(a => a.id === event.id);
-    if (appointment) {
-      setSelectedAppointment(appointment);
+    const cita = citas.find(c => c.id === event.id);
+    if (cita) {
+      setSelectedCita(cita);
       setShowModal(true);
     }
   };
 
   const handleCreateEvent = (date?: Date) => {
     setSelectedDate(date || new Date());
-    setSelectedAppointment(null);
+    setSelectedCita(null);
     setShowModal(true);
   };
 
-  const createAppointment = (newAppointment: Omit<Appointment, 'id'>) => {
-    const appointment: Appointment = {
-      ...newAppointment,
+  const crearCita = (nuevaCita: Omit<Cita, 'id'>) => {
+    const cita: Cita = {
+      ...nuevaCita,
       id: Date.now().toString()
     };
-    setAppointments([...appointments, appointment]);
+    setCitas([...citas, cita]);
     setShowModal(false);
     setSelectedDate(null);
   };
 
-  const updateAppointmentStatus = (id: string, newStatus: Appointment['status']) => {
-    setAppointments(appointments.map(appointment => 
-      appointment.id === id ? { ...appointment, status: newStatus } : appointment
+  const actualizarEstadoCita = (id: string, nuevoEstado: Cita['estado']) => {
+    setCitas(citas.map(cita => 
+      cita.id === id ? { ...cita, estado: nuevoEstado } : cita
     ));
   };
 
@@ -259,10 +259,10 @@ function MedicalAppointmentSystem() {
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
-            Medical Appointment System
+            Sistema de Citas Médicas
           </h1>
           <p className="text-gray-600 mt-2">
-            Manage your appointments efficiently
+            Gestiona tus citas de manera eficiente
           </p>
         </div>
 
@@ -270,26 +270,26 @@ function MedicalAppointmentSystem() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900">
-              Confirmed Appointments
+              Citas Confirmadas
             </h3>
             <p className="text-3xl font-bold text-green-600">
-              {appointments.filter(a => a.status === 'confirmed').length}
+              {citas.filter(c => c.estado === 'confirmada').length}
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900">
-              Pending Appointments
+              Citas Pendientes
             </h3>
             <p className="text-3xl font-bold text-yellow-600">
-              {appointments.filter(a => a.status === 'pending').length}
+              {citas.filter(c => c.estado === 'pendiente').length}
             </p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow-sm">
             <h3 className="text-lg font-semibold text-gray-900">
-              Total This Month
+              Total del Mes
             </h3>
             <p className="text-3xl font-bold text-blue-600">
-              {appointments.length}
+              {citas.length}
             </p>
           </div>
         </div>
@@ -308,96 +308,96 @@ function MedicalAppointmentSystem() {
         {showModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg max-w-md w-full mx-4 max-h-96 overflow-y-auto">
-              {selectedAppointment ? (
-                // View/Edit existing appointment
+              {selectedCita ? (
+                // Ver/Editar cita existente
                 <div>
-                  <h2 className="text-xl font-bold mb-4">Appointment Details</h2>
+                  <h2 className="text-xl font-bold mb-4">Detalles de la Cita</h2>
                   <div className="space-y-3">
-                    <p><strong>Patient:</strong> {selectedAppointment.patient_name}</p>
-                    <p><strong>Phone:</strong> {selectedAppointment.patient_phone}</p>
-                    <p><strong>Date:</strong> {selectedAppointment.date.toLocaleDateString()}</p>
-                    <p><strong>Time:</strong> {selectedAppointment.time}</p>
-                    <p><strong>Type:</strong> {selectedAppointment.title}</p>
+                    <p><strong>Cliente:</strong> {selectedCita.cliente_nombre}</p>
+                    <p><strong>Teléfono:</strong> {selectedCita.cliente_telefono}</p>
+                    <p><strong>Fecha:</strong> {selectedCita.fecha.toLocaleDateString()}</p>
+                    <p><strong>Hora:</strong> {selectedCita.hora}</p>
+                    <p><strong>Tipo:</strong> {selectedCita.titulo}</p>
                     <p>
-                      <strong>Status:</strong> 
+                      <strong>Estado:</strong> 
                       <span className={`ml-2 px-2 py-1 rounded text-sm ${
-                        selectedAppointment.status === 'confirmed' ? 'bg-green-100 text-green-800' :
-                        selectedAppointment.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        selectedCita.estado === 'confirmada' ? 'bg-green-100 text-green-800' :
+                        selectedCita.estado === 'pendiente' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-red-100 text-red-800'
                       }`}>
-                        {selectedAppointment.status}
+                        {selectedCita.estado}
                       </span>
                     </p>
-                    {selectedAppointment.notes && (
-                      <p><strong>Notes:</strong> {selectedAppointment.notes}</p>
+                    {selectedCita.notas && (
+                      <p><strong>Notas:</strong> {selectedCita.notas}</p>
                     )}
                   </div>
                   
                   <div className="flex justify-between mt-6">
                     <div className="space-x-2">
                       <button
-                        onClick={() => updateAppointmentStatus(selectedAppointment.id, 'confirmed')}
+                        onClick={() => actualizarEstadoCita(selectedCita.id, 'confirmada')}
                         className="px-3 py-1 bg-green-500 text-white rounded text-sm hover:bg-green-600"
                       >
-                        Confirm
+                        Confirmar
                       </button>
                       <button
-                        onClick={() => updateAppointmentStatus(selectedAppointment.id, 'cancelled')}
+                        onClick={() => actualizarEstadoCita(selectedCita.id, 'cancelada')}
                         className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
                       >
-                        Cancel
+                        Cancelar
                       </button>
                     </div>
                     <button
                       onClick={() => setShowModal(false)}
                       className="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-50"
                     >
-                      Close
+                      Cerrar
                     </button>
                   </div>
                 </div>
               ) : (
-                // Create new appointment
+                // Crear nueva cita
                 <div>
-                  <h2 className="text-xl font-bold mb-4">New Appointment</h2>
+                  <h2 className="text-xl font-bold mb-4">Nueva Cita</h2>
                   <p className="text-gray-600 mb-4">
-                    Date: {selectedDate?.toLocaleDateString()}
+                    Fecha: {selectedDate?.toLocaleDateString()}
                   </p>
                   
                   <form onSubmit={(e) => {
                     e.preventDefault();
                     const formData = new FormData(e.target as HTMLFormElement);
-                    createAppointment({
-                      title: formData.get('title') as string,
-                      patient_name: formData.get('patient_name') as string,
-                      patient_phone: formData.get('patient_phone') as string,
-                      date: selectedDate!,
-                      time: formData.get('time') as string,
-                      status: 'pending',
-                      notes: formData.get('notes') as string || undefined
+                    crearCita({
+                      titulo: formData.get('titulo') as string,
+                      cliente_nombre: formData.get('cliente_nombre') as string,
+                      cliente_telefono: formData.get('cliente_telefono') as string,
+                      fecha: selectedDate!,
+                      hora: formData.get('hora') as string,
+                      estado: 'pendiente',
+                      notas: formData.get('notas') as string || undefined
                     });
                   }}>
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Patient Name
+                          Nombre del Cliente
                         </label>
                         <input
                           type="text"
-                          name="patient_name"
+                          name="cliente_nombre"
                           required
                           className="w-full p-2 border border-gray-300 rounded"
-                          placeholder="e.g: Mary Garcia"
+                          placeholder="Ej: María García"
                         />
                       </div>
                       
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Phone
+                          Teléfono
                         </label>
                         <input
                           type="tel"
-                          name="patient_phone"
+                          name="cliente_telefono"
                           required
                           className="w-full p-2 border border-gray-300 rounded"
                           placeholder="+34 123 456 789"
@@ -407,28 +407,28 @@ function MedicalAppointmentSystem() {
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Consultation Type
+                            Tipo de Consulta
                           </label>
                           <select
-                            name="title"
+                            name="titulo"
                             required
                             className="w-full p-2 border border-gray-300 rounded"
                           >
-                            <option value="">Select...</option>
-                            <option value="General Consultation">General Consultation</option>
-                            <option value="Check-up">Check-up</option>
-                            <option value="Emergency">Emergency</option>
-                            <option value="Follow-up">Follow-up</option>
+                            <option value="">Seleccionar...</option>
+                            <option value="Consulta General">Consulta General</option>
+                            <option value="Revisión">Revisión</option>
+                            <option value="Urgencia">Urgencia</option>
+                            <option value="Seguimiento">Seguimiento</option>
                           </select>
                         </div>
                         
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Time
+                            Hora
                           </label>
                           <input
                             type="time"
-                            name="time"
+                            name="hora"
                             required
                             className="w-full p-2 border border-gray-300 rounded"
                           />
@@ -437,13 +437,13 @@ function MedicalAppointmentSystem() {
                       
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Notes (optional)
+                          Notas (opcional)
                         </label>
                         <textarea
-                          name="notes"
+                          name="notas"
                           rows={2}
                           className="w-full p-2 border border-gray-300 rounded"
-                          placeholder="Additional observations..."
+                          placeholder="Observaciones adicionales..."
                         />
                       </div>
                     </div>
@@ -454,13 +454,13 @@ function MedicalAppointmentSystem() {
                         onClick={() => setShowModal(false)}
                         className="px-4 py-2 text-gray-600 border border-gray-300 rounded hover:bg-gray-50"
                       >
-                        Cancel
+                        Cancelar
                       </button>
                       <button
                         type="submit"
                         className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                       >
-                        Create Appointment
+                        Crear Cita
                       </button>
                     </div>
                   </form>
@@ -474,12 +474,12 @@ function MedicalAppointmentSystem() {
   );
 }
 
-export default MedicalAppointmentSystem;
+export default SistemaCitasMedicas;
 ```
 
-## 🔗 Example with External API
+## 🔗 Ejemplo con API Externa
 
-Calendar integration with a REST API:
+Integración del calendario con una API REST:
 
 ```tsx
 import React, { useState, useEffect } from 'react';
@@ -499,7 +499,7 @@ function CalendarWithAPI() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Load events from API
+  // Cargar eventos desde la API
   useEffect(() => {
     fetchEvents();
   }, []);
@@ -507,17 +507,17 @@ function CalendarWithAPI() {
   const fetchEvents = async () => {
     try {
       setLoading(true);
-      // Replace with your actual endpoint
+      // Reemplaza con tu endpoint real
       const response = await fetch('/api/events');
       
       if (!response.ok) {
-        throw new Error('Error loading events');
+        throw new Error('Error al cargar eventos');
       }
       
       const data = await response.json();
       setEvents(data);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unknown error');
+      setError(err instanceof Error ? err.message : 'Error desconocido');
     } finally {
       setLoading(false);
     }
@@ -534,7 +534,7 @@ function CalendarWithAPI() {
       });
 
       if (!response.ok) {
-        throw new Error('Error creating event');
+        throw new Error('Error al crear evento');
       }
 
       const newEvent = await response.json();
@@ -542,7 +542,7 @@ function CalendarWithAPI() {
       
       return newEvent;
     } catch (err) {
-      console.error('Error creating event:', err);
+      console.error('Error creando evento:', err);
       throw err;
     }
   };
@@ -558,7 +558,7 @@ function CalendarWithAPI() {
       });
 
       if (!response.ok) {
-        throw new Error('Error updating event');
+        throw new Error('Error al actualizar evento');
       }
 
       const updatedEvent = await response.json();
@@ -568,7 +568,7 @@ function CalendarWithAPI() {
       
       return updatedEvent;
     } catch (err) {
-      console.error('Error updating event:', err);
+      console.error('Error actualizando evento:', err);
       throw err;
     }
   };
@@ -580,25 +580,25 @@ function CalendarWithAPI() {
       });
 
       if (!response.ok) {
-        throw new Error('Error deleting event');
+        throw new Error('Error al eliminar evento');
       }
 
       setEvents(events.filter(event => event.id !== id));
     } catch (err) {
-      console.error('Error deleting event:', err);
+      console.error('Error eliminando evento:', err);
       throw err;
     }
   };
 
   const handleDateClick = (date: Date) => {
-    console.log('Selected date:', date);
+    console.log('Fecha seleccionada:', date);
   };
 
   const handleEventClick = (event: any) => {
     const apiEvent = events.find(e => e.id === event.id);
     if (apiEvent) {
-      console.log('API Event:', apiEvent);
-      // Here you can show a modal with details
+      console.log('Evento de API:', apiEvent);
+      // Aquí puedes mostrar un modal con los detalles
     }
   };
 
@@ -607,14 +607,14 @@ function CalendarWithAPI() {
     
     try {
       const newEvent = await createEvent({
-        title: 'New Event',
+        title: 'Nuevo Evento',
         date: eventDate.toISOString(),
-        description: 'Event created from calendar'
+        description: 'Evento creado desde el calendario'
       });
       
-      console.log('Event created:', newEvent);
+      console.log('Evento creado:', newEvent);
     } catch (err) {
-      console.error('Error creating event:', err);
+      console.error('Error al crear evento:', err);
     }
   };
 
@@ -623,7 +623,7 @@ function CalendarWithAPI() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="text-gray-600 mt-4">Loading calendar...</p>
+          <p className="text-gray-600 mt-4">Cargando calendario...</p>
         </div>
       </div>
     );
@@ -641,7 +641,7 @@ function CalendarWithAPI() {
             onClick={fetchEvents}
             className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
-            Retry
+            Reintentar
           </button>
         </div>
       </div>
@@ -653,10 +653,10 @@ function CalendarWithAPI() {
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h1 className="text-3xl font-bold text-gray-900">
-            Calendar with API
+            Calendario con API
           </h1>
           <p className="text-gray-600 mt-2">
-            Events synchronized with server - Total: {events.length}
+            Eventos sincronizados con el servidor - Total: {events.length}
           </p>
         </div>
         
@@ -676,9 +676,9 @@ function CalendarWithAPI() {
 export default CalendarWithAPI;
 ```
 
-## 🎨 Example with Custom Themes
+## 🎨 Ejemplo con Temas Personalizados
 
-Calendar visual customization:
+Personalización visual del calendario:
 
 ```tsx
 import React, { useState } from 'react';
@@ -692,37 +692,37 @@ function CalendarWithThemes() {
 
   const themes = {
     default: {
-      name: 'Default',
+      name: 'Por Defecto',
       class: '',
-      description: 'Standard calendar theme'
+      description: 'Tema estándar del calendario'
     },
     dark: {
-      name: 'Dark',
+      name: 'Oscuro',
       class: 'dark-theme',
-      description: 'Dark theme for low-light environments'
+      description: 'Tema oscuro para entornos con poca luz'
     },
     colorful: {
-      name: 'Colorful',
+      name: 'Colorido',
       class: 'colorful-theme',
-      description: 'Vibrant theme with eye-catching colors'
+      description: 'Tema vibrante con colores llamativos'
     },
     minimal: {
-      name: 'Minimal',
+      name: 'Minimalista',
       class: 'minimal-theme',
-      description: 'Clean and minimalist design'
+      description: 'Diseño limpio y minimalista'
     }
   };
 
   const handleDateClick = (date: Date) => {
-    console.log('Date:', date);
+    console.log('Fecha:', date);
   };
 
   const handleEventClick = (event: any) => {
-    console.log('Event:', event);
+    console.log('Evento:', event);
   };
 
   const handleCreateEvent = (date?: Date) => {
-    console.log('Create event:', date);
+    console.log('Crear evento:', date);
   };
 
   return (
@@ -730,14 +730,14 @@ function CalendarWithThemes() {
       currentTheme === 'dark' ? 'bg-gray-900' : 'bg-gray-50'
     }`}>
       <div className="max-w-7xl mx-auto">
-        {/* Theme Selector */}
+        {/* Selector de Temas */}
         <div className={`rounded-lg shadow-sm p-6 mb-6 ${
           currentTheme === 'dark' ? 'bg-gray-800' : 'bg-white'
         }`}>
           <h1 className={`text-3xl font-bold mb-4 ${
             currentTheme === 'dark' ? 'text-white' : 'text-gray-900'
           }`}>
-            Calendar with Custom Themes
+            Calendario con Temas Personalizados
           </h1>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -814,14 +814,14 @@ function CalendarWithThemes() {
           />
         </div>
 
-        {/* Theme Information */}
+        {/* Información del Tema */}
         <div className={`mt-6 p-4 rounded-lg ${
           currentTheme === 'dark' 
             ? 'bg-gray-800 text-gray-300' 
             : 'bg-blue-50 text-blue-800'
         }`}>
           <h3 className="font-semibold mb-2">
-            Current Theme: {themes[currentTheme].name}
+            Tema Actual: {themes[currentTheme].name}
           </h3>
           <p className="text-sm">
             {themes[currentTheme].description}
@@ -835,9 +835,9 @@ function CalendarWithThemes() {
 export default CalendarWithThemes;
 ```
 
-## 📱 Responsive Example
+## 📱 Ejemplo Responsive
 
-Calendar that adapts to different screen sizes:
+Calendario que se adapta a diferentes tamaños de pantalla:
 
 ```tsx
 import React, { useState, useEffect } from 'react';
@@ -867,23 +867,23 @@ function ResponsiveCalendar() {
   }, []);
 
   const handleDateClick = (date: Date) => {
-    console.log('Date:', date);
+    console.log('Fecha:', date);
   };
 
   const handleEventClick = (event: any) => {
-    console.log('Event:', event);
+    console.log('Evento:', event);
   };
 
   const handleCreateEvent = (date?: Date) => {
-    console.log('Create event:', date);
+    console.log('Crear evento:', date);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile header */}
+      {/* Header móvil */}
       {screenSize === 'mobile' && (
         <div className="bg-white shadow-sm border-b p-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold">Calendar</h1>
+          <h1 className="text-xl font-bold">Calendario</h1>
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="p-2 rounded-md bg-gray-100"
@@ -907,41 +907,41 @@ function ResponsiveCalendar() {
           <div className="p-6">
             {screenSize !== 'mobile' && (
               <h1 className="text-2xl font-bold text-gray-900 mb-6">
-                My Calendar
+                Mi Calendario
               </h1>
             )}
             
-            {/* Mini calendar or event list */}
+            {/* Mini calendario o lista de eventos */}
             <div className="space-y-4">
               <div>
                 <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                  Upcoming Events
+                  Próximos Eventos
                 </h3>
                 <div className="space-y-2">
                   <div className="p-3 bg-blue-50 rounded-lg">
-                    <p className="font-medium text-blue-900">Team Meeting</p>
-                    <p className="text-sm text-blue-600">Today 3:00 PM</p>
+                    <p className="font-medium text-blue-900">Reunión Equipo</p>
+                    <p className="text-sm text-blue-600">Hoy 15:00</p>
                   </div>
                   <div className="p-3 bg-green-50 rounded-lg">
-                    <p className="font-medium text-green-900">Presentation</p>
-                    <p className="text-sm text-green-600">Tomorrow 10:00 AM</p>
+                    <p className="font-medium text-green-900">Presentación</p>
+                    <p className="text-sm text-green-600">Mañana 10:00</p>
                   </div>
                 </div>
               </div>
               
               <div>
                 <h3 className="text-lg font-semibold text-gray-700 mb-3">
-                  Quick Actions
+                  Acciones Rápidas
                 </h3>
                 <div className="space-y-2">
                   <button className="w-full p-2 text-left text-blue-600 hover:bg-blue-50 rounded">
-                    + New Event
+                    + Nuevo Evento
                   </button>
                   <button className="w-full p-2 text-left text-gray-600 hover:bg-gray-50 rounded">
-                    📅 View Agenda
+                    📅 Ver Agenda
                   </button>
                   <button className="w-full p-2 text-left text-gray-600 hover:bg-gray-50 rounded">
-                    ⚙️ Settings
+                    ⚙️ Configuración
                   </button>
                 </div>
               </div>
@@ -949,7 +949,7 @@ function ResponsiveCalendar() {
           </div>
         </div>
 
-        {/* Overlay for mobile */}
+        {/* Overlay para móvil */}
         {screenSize === 'mobile' && isSidebarOpen && (
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -957,22 +957,22 @@ function ResponsiveCalendar() {
           />
         )}
 
-        {/* Main content */}
+        {/* Contenido principal */}
         <div className="flex-1 min-h-screen">
           <div className={`p-${screenSize === 'mobile' ? '4' : '6'}`}>
             {screenSize !== 'mobile' && (
               <div className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  Responsive Calendar
+                  Calendario Responsive
                 </h1>
                 <p className="text-gray-600">
-                  Screen size: {screenSize} 
+                  Tamaño de pantalla: {screenSize} 
                   ({window.innerWidth}px x {window.innerHeight}px)
                 </p>
               </div>
             )}
 
-            {/* Adaptive calendar */}
+            {/* Calendario adaptativo */}
             <div className="bg-white rounded-lg shadow-sm p-3 md:p-6">
               <CalendarMain
                 initialView="month"
@@ -982,24 +982,24 @@ function ResponsiveCalendar() {
               />
             </div>
 
-            {/* Additional information for tablets and desktop */}
+            {/* Información adicional para tablets y desktop */}
             {screenSize !== 'mobile' && (
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-lg shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    Events Today
+                    Eventos Hoy
                   </h3>
                   <p className="text-3xl font-bold text-blue-600">3</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    This Week
+                    Esta Semana
                   </h3>
                   <p className="text-3xl font-bold text-green-600">12</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-sm">
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    This Month
+                    Este Mes
                   </h3>
                   <p className="text-3xl font-bold text-purple-600">45</p>
                 </div>
@@ -1015,33 +1015,33 @@ function ResponsiveCalendar() {
 export default ResponsiveCalendar;
 ```
 
-## 💡 Tips and Best Practices
+## 💡 Tips y Mejores Prácticas
 
-### 🚀 Performance Optimization
+### 🚀 Optimización de Rendimiento
 
 ```tsx
 import React, { memo, useCallback, useMemo } from 'react';
 import { CalendarMain } from '@interactive/calendar';
 
-// Optimized component with React.memo
+// Componente optimizado con React.memo
 const OptimizedCalendar = memo(() => {
-  // Use useCallback for functions passed as props
+  // Usar useCallback para funciones que se pasan como props
   const handleDateClick = useCallback((date: Date) => {
-    console.log('Optimized date:', date);
+    console.log('Fecha optimizada:', date);
   }, []);
 
   const handleEventClick = useCallback((event: any) => {
-    console.log('Optimized event:', event);
+    console.log('Evento optimizado:', event);
   }, []);
 
   const handleCreateEvent = useCallback((date?: Date) => {
-    console.log('Create optimized event:', date);
+    console.log('Crear evento optimizado:', date);
   }, []);
 
-  // Use useMemo for expensive calculations
+  // Usar useMemo para cálculos costosos
   const calendarConfig = useMemo(() => ({
     initialView: "month" as const,
-    // Other configurations...
+    // Otras configuraciones...
   }), []);
 
   return (
@@ -1055,12 +1055,12 @@ const OptimizedCalendar = memo(() => {
 });
 ```
 
-### 🎯 State Management
+### 🎯 Manejo de Estados
 
 ```tsx
 import React, { useReducer } from 'react';
 
-// Reducer for complex state management
+// Reducer para manejo complejo de estado
 interface CalendarState {
   selectedDate: Date | null;
   events: Event[];
@@ -1097,14 +1097,14 @@ function CalendarWithReducer() {
     loading: false
   });
 
-  // Using the reducer...
+  // Uso del reducer...
 }
 ```
 
-### 🔧 Advanced Customization
+### 🔧 Personalización Avanzada
 
 ```css
-/* Custom CSS styles */
+/* Estilos CSS personalizados */
 .custom-calendar {
   --calendar-primary-color: #3b82f6;
   --calendar-secondary-color: #e5e7eb;
@@ -1127,27 +1127,27 @@ function CalendarWithReducer() {
 }
 ```
 
-### 📱 Accessibility
+### 📱 Accesibilidad
 
 ```tsx
-// Example with enhanced accessibility features
+// Ejemplo con características de accesibilidad mejoradas
 function AccessibleCalendar() {
   return (
-    <div role="application" aria-label="Interactive calendar">
+    <div role="application" aria-label="Calendario interactivo">
       <CalendarMain
         initialView="month"
         onDateClick={(date) => {
-          // Announce selected date for screen readers
-          const announcement = `Selected date: ${date.toLocaleDateString()}`;
-          // You can use a library like react-aria-live for announcements
+          // Anunciar la fecha seleccionada para lectores de pantalla
+          const announcement = `Fecha seleccionada: ${date.toLocaleDateString()}`;
+          // Puedes usar una librería como react-aria-live para anuncios
           console.log(announcement);
         }}
         onEventClick={(event) => {
-          // Provide contextual event information
-          console.log(`Event: ${event.title}`);
+          // Proporcionar información contextual del evento
+          console.log(`Evento: ${event.title}`);
         }}
         onCreateEvent={(date) => {
-          console.log(`Create new event for: ${date?.toLocaleDateString()}`);
+          console.log(`Crear nuevo evento para: ${date?.toLocaleDateString()}`);
         }}
       />
     </div>
@@ -1157,14 +1157,14 @@ function AccessibleCalendar() {
 
 ---
 
-## 📚 Additional Resources
+## 📚 Recursos Adicionales
 
-- **Complete documentation**: See `README.md`
-- **Available components**: `src/calendar-views/`
-- **TypeScript types**: `src/types/`
-- **Custom hooks**: `src/hooks/`
-- **Utilities**: `src/utils/`
+- **Documentación completa**: Ver `README.md`
+- **Componentes disponibles**: `src/calendar-views/`
+- **Tipos TypeScript**: `src/types/`
+- **Hooks personalizados**: `src/hooks/`
+- **Utilidades**: `src/utils/`
 
 ---
 
-*Need more examples or have specific questions? Don't hesitate to check the complete documentation or create an issue in the repository!*
+*¿Necesitas más ejemplos o tienes alguna pregunta específica? ¡No dudes en consultar la documentación completa o crear un issue en el repositorio!*
