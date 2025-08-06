@@ -21,17 +21,20 @@ interface CalendarStatsBarProps {
   eventStats: EventStats
   /** Translated total appointments text */
   totalAppointmentsText: string
-  /** Translated status text */
-  statusText: string
-  /** Translation function for status plurals */
-  getStatusText: (status: string, count: number) => string
+  /** Translation function for status names (without numbers) */
+  getStatusText: (status: string) => string
+  /** Currently selected status filter */
+  selectedStatusFilter?: AppointmentStatus | null
+  /** Callback when a status filter is clicked */
+  onStatusFilterClick?: (status: AppointmentStatus) => void
 }
 
 export const CalendarStatsBar = memo<CalendarStatsBarProps>(({
   eventStats,
   totalAppointmentsText,
-  statusText,
-  getStatusText
+  getStatusText,
+  selectedStatusFilter,
+  onStatusFilterClick
 }) => {
 
   // Memoized status indicators to prevent recreation
@@ -42,40 +45,43 @@ export const CalendarStatsBar = memo<CalendarStatsBarProps>(({
     statusTypes.forEach(status => {
       const count = eventStats.byStatus[status] || 0
       if (count > 0) {
+        const isSelected = selectedStatusFilter === status
         indicators.push(
-          <StatusIndicator
+          <div
             key={status}
-            status={status}
-            count={count}
-            minimal={true}
-            customText={getStatusText(status, count)}
-          />
+            onClick={() => onStatusFilterClick?.(status)}
+            className="cursor-pointer transition-all duration-200 hover:scale-105"
+          >
+            <StatusIndicator
+              status={status}
+              count={count}
+              minimal={true}
+              customText={getStatusText(status)}
+              isSelected={isSelected}
+            />
+          </div>
         )
       }
     })
     
     return indicators
-  }, [eventStats.byStatus, getStatusText])
+  }, [eventStats.byStatus, getStatusText, selectedStatusFilter, onStatusFilterClick])
 
   return (
-    <div className="flex items-center justify-between bg-white/60 rounded-lg p-3 shadow-sm border">
+    <div className="flex items-center justify-between bg-white/80 rounded-xl p-4 shadow-sm border border-gray-100/50 backdrop-blur-sm">
       {/* Total appointments */}
-      <div className="flex items-center gap-2">
-        <CalendarIcon className="h-4 w-4 text-blue-600" />
-        <span className="text-sm font-medium text-gray-600">
+      <div className="flex items-center gap-3">
+        <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
+          <CalendarIcon className="h-4 w-4 text-blue-600" />
+        </div>
+        <span className="text-sm font-semibold text-gray-700">
           {totalAppointmentsText}
         </span>
       </div>
       
       {/* Status indicators */}
       <div className="flex items-center gap-4">
-        <span className="text-sm font-medium text-gray-600">
-          {statusText}
-        </span>
-        
-        <div className="flex items-center gap-3">
-          {statusIndicators}
-        </div>
+        {statusIndicators}
       </div>
     </div>
   )

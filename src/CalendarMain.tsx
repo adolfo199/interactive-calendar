@@ -6,7 +6,7 @@
  * Optimized with React.memo, useCallback and useMemo for performance
  */
 
-import React, { memo, useCallback, useMemo } from 'react'
+import React, { memo, useCallback, useMemo, useState } from 'react'
 import { cn } from './utils'
 import { Card, CardContent, CardHeader } from './components/ui/card'
 
@@ -31,6 +31,7 @@ import type {
   CalendarProps, 
   CalendarEvent, 
   CalendarView,
+  AppointmentStatus,
 } from './types/appointment.types'
 
 interface CalendarMainProps extends Omit<CalendarProps, 'events' | 'view' | 'currentDate'> {
@@ -72,6 +73,9 @@ export const CalendarMain = memo<CalendarMainProps>(({
   loading = false,
   className,
 }) => {
+  
+  // State for status filtering
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState<AppointmentStatus | null>(null)
   
   // Hooks
   const t = useCalendarTranslations({ locale })
@@ -152,15 +156,22 @@ export const CalendarMain = memo<CalendarMainProps>(({
   }, [calendar])
 
   // Memoized common props for view components to prevent unnecessary re-renders
-  const commonViewProps = useMemo(() => ({
-    events: events.events,
-    currentDate: calendar.currentDate,
-    selectedDate: calendar.selectedDate,
-    onDateClick: handleDateClick,
-    onEventClick: handleEventClick,
-    loading: loading || events.loading,
-    locale
-  }), [
+  const commonViewProps = useMemo(() => {
+    // Filter events by selected status if any
+    const filteredEvents = selectedStatusFilter 
+      ? events.events.filter(event => event.extendedProps?.appointment?.status === selectedStatusFilter)
+      : events.events
+
+    return {
+      events: filteredEvents,
+      currentDate: calendar.currentDate,
+      selectedDate: calendar.selectedDate,
+      onDateClick: handleDateClick,
+      onEventClick: handleEventClick,
+      loading: loading || events.loading,
+      locale
+    }
+  }, [
     events.events,
     calendar.currentDate,
     calendar.selectedDate,
@@ -168,7 +179,8 @@ export const CalendarMain = memo<CalendarMainProps>(({
     handleEventClick,
     loading,
     events.loading,
-    locale
+    locale,
+    selectedStatusFilter
   ])
 
   // Memoized view selector labels to prevent recreation
@@ -185,9 +197,14 @@ export const CalendarMain = memo<CalendarMainProps>(({
   }), [height])
 
   // Memoized translation functions for subcomponents
-  const getStatusText = useCallback((status: string, count: number) => {
-    return t.t(`appointments:statusPlural.${status}`, { count })
+  const getStatusText = useCallback((status: string) => {
+    return t.t(`appointments:status.${status}`)
   }, [t])
+
+  // Status filter handler
+  const handleStatusFilterClick = useCallback((status: AppointmentStatus) => {
+    setSelectedStatusFilter(current => current === status ? null : status)
+  }, [])
 
   const retryEvents = useCallback(() => {
     events.loadEvents()
@@ -234,8 +251,9 @@ export const CalendarMain = memo<CalendarMainProps>(({
           <CalendarStatsBar
             eventStats={events.eventStats}
             totalAppointmentsText={t.t('stats.totalAppointments', { count: events.eventStats.total })}
-            statusText={t.t('stats.status')}
             getStatusText={getStatusText}
+            selectedStatusFilter={selectedStatusFilter}
+            onStatusFilterClick={handleStatusFilterClick}
           />
         </CardHeader>
       )}
