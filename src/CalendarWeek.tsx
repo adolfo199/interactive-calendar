@@ -279,7 +279,7 @@ export function CalendarWeek({
                 </div>
                 
                 {/* Indicador de eventos */}
-                <div className="flex items-center space-x-1 mt-1">
+                <div className="flex items-center gap-1 mt-1">
                   {dayEvents.length > 0 && (
                     <div className={cn(
                       "w-2 h-2 rounded-full transition-all duration-200",
@@ -368,7 +368,7 @@ export function CalendarWeek({
                         >
                           {/* Header del evento */}
                           <div className="flex items-center justify-between mb-1">
-                            <div className="flex items-center space-x-1">
+                            <div className="flex items-center gap-1">
                               {tipoIcon}
                               <span className="font-bold text-xs">
                                 {new Date(event.start).toLocaleTimeString(browserLocale, { 
@@ -386,7 +386,7 @@ export function CalendarWeek({
                           </div>
                           
                           {/* Ubicación */}
-                          <div className="flex items-center space-x-1 opacity-90">
+                          <div className="flex items-center gap-1 opacity-90">
                             <MapPin className="h-2.5 w-2.5" />
                             <span className="truncate text-xs">
                               {event.extendedProps.location}
@@ -404,23 +404,23 @@ export function CalendarWeek({
                         {/* Tooltip mejorado al hacer hover */}
                         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 w-max max-w-xs shadow-xl">
                           <div className="font-semibold mb-2">{event.title}</div>
-                          <div className="space-y-1 text-xs">
-                            <div className="flex items-center space-x-2">
+                          <div className="flex flex-col gap-1 text-xs">
+                            <div className="flex items-center gap-2">
                               <Clock className="h-3 w-3" />
                               <span>
                                 {new Date(event.start).toLocaleTimeString(browserLocale, { hour: '2-digit', minute: '2-digit' })} - 
                                 {new Date(event.end).toLocaleTimeString(browserLocale, { hour: '2-digit', minute: '2-digit' })}
                               </span>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center gap-2">
                               <MapPin className="h-3 w-3" />
                               <span>{event.extendedProps.location}</span>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center gap-2">
                               {getStatusIcon(event.extendedProps.status)}
                               <span className="capitalize">{event.extendedProps.status}</span>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center gap-2">
                               {getEventIcon(event.extendedProps.type)}
                               <span className="capitalize">{event.extendedProps.type}</span>
                             </div>

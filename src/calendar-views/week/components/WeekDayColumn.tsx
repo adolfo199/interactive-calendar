@@ -87,7 +87,7 @@ export function WeekDayColumn({
   }
 
   return (
-    <div className={cn('space-y-0', className)}>
+    <div className={cn('', className)}>
       {timeSlots.map((timeSlot, index) => {
         const slotEvents = events.filter(event => 
           isEventInTimeSlot(event, timeSlot, date)

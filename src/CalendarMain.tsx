@@ -184,9 +184,9 @@ export function CalendarMain({
         <CardHeader className="pt-6 pb-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b">
           {/* Main navigation and controls */}
           <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center gap-6">
               {/* Calendar title with icon */}
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <div className="p-2 bg-primary/10 rounded-lg">
                   <CalendarIcon className="h-5 w-5 text-primary" />
                 </div>
@@ -207,7 +207,7 @@ export function CalendarMain({
               />
             </div>
 
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
               {/* View selector */}
               {showViewSelector && (
                 <ViewSelector
@@ -244,7 +244,7 @@ export function CalendarMain({
           {/* Statistics and status indicators */}
           <div className="flex items-center justify-between bg-white/60 rounded-lg p-3 shadow-sm border">
             {/* Total appointments */}
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-2">
               <CalendarIcon className="h-4 w-4 text-blue-600" />
               <span className="text-sm font-medium text-gray-600">
                 {t.t('stats.totalAppointments', { count: events.eventStats.total })}
@@ -252,12 +252,12 @@ export function CalendarMain({
             </div>
             
             {/* Status indicators */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center gap-4">
               <span className="text-sm font-medium text-gray-600">
                 {t.t('stats.status')}
               </span>
               
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 {events.eventStats.byStatus.confirmed > 0 && (
                   <StatusIndicator
                     status="confirmed"

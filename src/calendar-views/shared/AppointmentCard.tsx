@@ -180,7 +180,7 @@ const AppointmentCard = memo<AppointmentCardProps>(({
       onClick={handleClick}
     >
       {/* Main content */}
-      <div className="flex items-center space-x-1 mb-1">
+      <div className="flex items-center gap-1 mb-1">
         {typeIcon}
         <span className="font-medium truncate flex-1">
           {event.title}
@@ -190,10 +190,10 @@ const AppointmentCard = memo<AppointmentCardProps>(({
 
       {/* Additional details based on variant */}
       {shouldShowDetails && (
-        <div className="space-y-1">
+        <div className="flex flex-col gap-1">
           {/* Time */}
           {formattedTime && (
-            <div className="flex items-center space-x-1 text-xs opacity-90">
+            <div className="flex items-center gap-1 text-xs opacity-90">
               <Clock className="h-2.5 w-2.5" />
               <span>{formattedTime}</span>
             </div>
@@ -201,7 +201,7 @@ const AppointmentCard = memo<AppointmentCardProps>(({
           
           {/* Location */}
           {event.extendedProps.location && (
-            <div className="flex items-center space-x-1 text-xs opacity-90">
+            <div className="flex items-center gap-1 text-xs opacity-90">
               <MapPin className="h-2.5 w-2.5" />
               <span className="truncate">
                 {event.extendedProps.location}
@@ -213,7 +213,7 @@ const AppointmentCard = memo<AppointmentCardProps>(({
 
       {/* Location for monthly view (more compact) */}
       {variant === 'month' && event.extendedProps.location && !showDetails && (
-        <div className="flex items-center space-x-1 text-xs opacity-90">
+        <div className="flex items-center gap-1 text-xs opacity-90">
           <MapPin className="h-2.5 w-2.5" />
           <span className="truncate">
             {event.extendedProps.location}
@@ -225,20 +225,20 @@ const AppointmentCard = memo<AppointmentCardProps>(({
       {showTooltip && (
         <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 w-max max-w-xs shadow-lg">
           <div className="font-semibold mb-1">{event.title}</div>
-          <div className="space-y-1 text-xs">
+          <div className="flex flex-col gap-1 text-xs">
             {formattedTime && (
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 <span>{formattedTime}</span>
               </div>
             )}
             {event.extendedProps.location && (
-              <div className="flex items-center space-x-1">
+              <div className="flex items-center gap-1">
                 <MapPin className="h-3 w-3" />
                 <span>{event.extendedProps.location}</span>
               </div>
             )}
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center gap-1">
               <div className="h-3 w-3">{statusIcon}</div>
               <span className="capitalize">{status}</span>
             </div>

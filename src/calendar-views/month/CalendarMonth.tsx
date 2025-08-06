@@ -98,7 +98,7 @@ export function CalendarMonth({
       {loading && (
         <div className="absolute inset-0 bg-white/20 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white rounded-lg shadow-lg p-4">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
               <span className="text-sm text-gray-600">
                 {t.t('loading.calendar')}

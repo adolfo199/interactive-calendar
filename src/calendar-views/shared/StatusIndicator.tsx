@@ -64,7 +64,7 @@ export function StatusIndicator({
 
   if (minimal) {
     return (
-      <div className={cn('flex items-center space-x-1.5', className)}>
+      <div className={cn('flex items-center gap-1.5', className)}>
         <div className={cn('w-3 h-3 rounded-full', config.color)} />
         {(count !== undefined || customText) && (
           <span className="text-xs text-gray-600">
@@ -77,7 +77,7 @@ export function StatusIndicator({
   }
 
   return (
-    <div className={cn('flex items-center space-x-1.5', className)}>
+    <div className={cn('flex items-center gap-1.5', className)}>
       <div className={cn('w-3 h-3 rounded-full', config.color)} />
       <Badge 
         variant="outline" 

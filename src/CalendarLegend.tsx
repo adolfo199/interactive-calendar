@@ -53,10 +53,10 @@ export function CalendarLegend({ className, compact = false }: CalendarLegendPro
 
   if (compact) {
     return (
-      <div className={cn('flex items-center space-x-3', className)}>
+      <div className={cn('flex items-center gap-3', className)}>
         <span className="text-xs font-medium text-gray-600">Estados:</span>
         {estadosInfo.map((info) => (
-          <div key={info.estado} className="flex items-center space-x-1">
+          <div key={info.estado} className="flex items-center gap-1">
             <div className={cn('w-3 h-3 rounded-full', info.color)}></div>
             <span className="text-xs text-gray-600">{info.label}</span>
           </div>
@@ -70,7 +70,7 @@ export function CalendarLegend({ className, compact = false }: CalendarLegendPro
       <h3 className="text-sm font-semibold text-gray-900 mb-3">Leyenda de Estados</h3>
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {estadosInfo.map((info) => (
-          <div key={info.estado} className="flex items-center space-x-2">
+          <div key={info.estado} className="flex items-center gap-2">
             <div className={cn('w-4 h-4 rounded-full shadow-sm', info.color)}></div>
             <div className="flex-1 min-w-0">
               <Badge 

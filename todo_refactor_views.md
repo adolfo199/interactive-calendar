@@ -2,8 +2,21 @@
 
 ## Estado Actual del Proyecto
 **Rama:** `views-refactor` ✅  
-**Última actualización:** 31 de julio de 2025  
-**Progreso general:** 🟢 Fases 1, 2, 3, 4 y 5 Completadas | ⏳ Fase 6 Pendiente
+**Última actualización:** 5 de agosto de 2025  
+**Progreso general:** 🟢 Fases 1, 2, 3, 4 y 5 Completadas | ⏳ Fase 6 en Progreso (30%)
+
+## 📝 Changelog Reciente
+
+### 5 de agosto de 2025 - Optimización CSS
+- ✅ **Eliminación masiva de clases space-x/space-y problemáticas**
+  - 🔍 Identificadas 59 instancias de clases problemáticas en 13 archivos
+  - 🔄 Reemplazadas sistemáticamente por alternativas confiables:
+    - `space-y-1.5` → `gap-1.5` o `[&>*:not(:first-child)]:mt-1.5`
+    - `space-x-2` → `gap-2` para layouts flex/grid
+    - `space-y-0` → eliminado (no hace nada)
+  - 📦 CSS optimizado: 38KB → 37KB (-1KB, -8 clases CSS generadas)
+  - 🎯 Archivos actualizados: CalendarMain, AppointmentCard, NavigationControls, ViewSelector, StatusIndicator, MonthDay, CalendarMonth, TimeSlot, WeekDayColumn, WeekTimeAxis, WeekHeader, CalendarLegend, CalendarWeek
+  - ✅ Build CSS exitoso con script simplificado
 
 ### ✅ Completado:
 - **Fase 1:** Estructura y componentes compartidos (100%)
@@ -64,10 +77,17 @@
   - Arquitectura modular y separación de responsabilidades
 
 ### ⏳ En Progreso:
-- **Fase 5:** CalendarDay refactorización (100%) ✅
+- **Fase 6:** Testing y optimización (30%)
+  - ✅ Eliminación de clases space-x/space-y problemáticas completada
+  - ✅ Reemplazadas por alternativas confiables (gap, margin directo)
+  - ✅ CSS optimizado de 38KB → 37KB (-1KB, -8 clases)
+  - ⏳ Tests unitarios para cada componente
+  - ⏳ Tests de integración para orquestadores
+  - ⏳ Optimización de performance (React.memo, useCallback)
+  - ⏳ Documentación JSDoc
 
 ### 📋 Pendiente:
-- Fase 6: Testing y optimización
+- Completar Fase 6: Testing y optimización restante
 
 ## Objetivo
 
@@ -272,10 +292,14 @@ interface ViewSelectorProps {
 5. ✅ Refactorizar `CalendarDay.tsx` como orquestador diario (54 líneas)
 
 ### Fase 6: Testing y optimización
-1. ⏳ Tests unitarios para cada componente
-2. ⏳ Tests de integración para orquestadores
-3. ⏳ Optimización de performance (React.memo, useCallback)
-4. ⏳ Documentación JSDoc
+1. ✅ **CSS Optimization**: Eliminación de clases space-x/space-y problemáticas
+   - Reemplazadas 59 instancias en 13 archivos
+   - CSS reducido de 38KB → 37KB
+   - Alternativas confiables implementadas (gap, margin directo)
+2. ⏳ Tests unitarios para cada componente
+3. ⏳ Tests de integración para orquestadores
+4. ⏳ Optimización de performance (React.memo, useCallback)
+5. ⏳ Documentación JSDoc
 
 ## Migración y Compatibilidad
 

@@ -57,7 +57,7 @@ const NavigationControls = memo<NavigationControlsProps>(({
     if (variant !== 'compact') return null
     
     return (
-      <div className={cn('flex items-center space-x-2', className)}>
+      <div className={cn('flex items-center gap-2', className)}>
         <Button 
           variant="ghost" 
           size="sm"
@@ -89,14 +89,14 @@ const NavigationControls = memo<NavigationControlsProps>(({
   if (compactVariant) return compactVariant
 
   return (
-    <div className={cn('flex items-center space-x-4', className)}>
+    <div className={cn('flex items-center gap-4', className)}>
       {/* Title */}
       <h2 className="text-xl font-bold text-gray-900 min-w-0">
         {title}
       </h2>
       
       {/* Navigation controls */}
-      <div className="flex items-center space-x-2 bg-white rounded-lg p-1 shadow-sm border">
+      <div className="flex items-center gap-2 bg-white rounded-lg p-1 shadow-sm border">
         <Button 
           variant="ghost" 
           size="sm"

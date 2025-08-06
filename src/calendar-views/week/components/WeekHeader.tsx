@@ -63,7 +63,7 @@ export function WeekHeader({
             )}
             onClick={() => handleDayClick(day)}
           >
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               {/* Weekday name */}
               <div className="text-xs font-medium text-gray-600 uppercase">
                 {weekDayNames[index] || day.toLocaleDateString(locale, { weekday: 'short' })}

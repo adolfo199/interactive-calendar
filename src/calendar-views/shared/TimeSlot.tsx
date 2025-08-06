@@ -96,7 +96,7 @@ export function TimeSlot({
       )}>
         {events.length > 0 ? (
           <div className={cn(
-            "space-y-1 h-full",
+            "flex flex-col gap-1 h-full",
             {
               'pt-1': showTimeLabel && view === 'day'
             }

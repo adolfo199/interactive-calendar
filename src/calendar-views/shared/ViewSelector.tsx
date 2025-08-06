@@ -78,7 +78,7 @@ const ViewSelector = memo<ViewSelectorProps>(({
 
   // Memoize the container className
   const containerClassName = useMemo(() => 
-    cn('flex space-x-1 bg-white rounded-lg p-1 shadow-sm border', className)
+    cn('flex gap-1 bg-white rounded-lg p-1 shadow-sm border', className)
   , [className])
 
   // Memoize the view click handler factory

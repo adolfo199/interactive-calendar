@@ -35,6 +35,7 @@ export function MonthDay({
   isCurrentMonth,
   isSelected,
   isToday,
+  // eslint-disable-next-line no-unused-vars
   locale: _locale = 'en', // Prefixed with underscore to indicate intentionally unused
   onDateClick,
   onEventClick,
@@ -77,7 +78,7 @@ export function MonthDay({
         
         {/* Availability indicator */}
         {events.length > 0 && (
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center gap-1">
             <div className={cn(
               "w-2 h-2 rounded-full transition-all duration-200",
               events.length > 3 ? "bg-red-500" : events.length > 1 ? "bg-yellow-500" : "bg-green-500"
@@ -90,7 +91,7 @@ export function MonthDay({
       </div>
 
       {/* Day events with improved design */}
-      <div className="space-y-1.5">
+      <div className="flex flex-col gap-1.5">
         {events.slice(0, 2).map((event, index) => (
           <AppointmentCard
             key={`${event.id}-${index}`}
@@ -100,7 +101,7 @@ export function MonthDay({
             showDetails={false}
             showTooltip={true}
             onClick={handleEventClick}
-            className="relative"
+            className="relative p-1.5 text-xs"
           />
         ))}
         

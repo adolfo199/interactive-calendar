@@ -19,7 +19,7 @@ export function WeekTimeAxis({
 }: WeekTimeAxisProps) {
 
   return (
-    <div className={cn('space-y-0', className)}>
+    <div className={cn('', className)}>
       {timeSlots.map((timeSlot, index) => {
         const isHour = timeSlot.endsWith(':00')
         
