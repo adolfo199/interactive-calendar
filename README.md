@@ -12,6 +12,20 @@ Un componente de calendario interactivo y moderno para React con TypeScript, dis
 - 🎯 **Eventos interactivos**: Manejo completo de eventos de clic y creación
 - 💼 **Gestión de citas**: Diseñado para sistemas de citas médicas/profesionales
 
+## 📖 Ejemplos de Uso
+
+¿Quieres ver el calendario en acción? Consulta nuestra **[guía completa de ejemplos](./EXAMPLES.md)** que incluye:
+
+- 🚀 **Ejemplo básico**: Integración simple en 5 minutos
+- 🎯 **Modal y eventos**: Manejo avanzado de estado y creación de eventos  
+- 🏥 **Sistema de citas médicas**: Implementación completa para consultorios
+- 🔗 **Integración con API**: Sincronización con backend REST
+- 🎨 **Temas personalizados**: Customización visual completa
+- 📱 **Diseño responsive**: Adaptación a móviles y tablets
+- 💡 **Tips de optimización**: Mejores prácticas y rendimiento
+
+➡️ **[Ver todos los ejemplos →](./EXAMPLES.md)**
+
 ## �‍💻 Desarrollo
 
 ### Configuración del Entorno
